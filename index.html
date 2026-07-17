@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <title>Big Turbo VR6 Build · timegan.ai</title>
+  <style>
+    html, body { margin: 0; padding: 0; background: #0B0C0E; font-family: 'JetBrains Mono', monospace; color: #E8E6E0; }
+    * { box-sizing: border-box; }
+    a { color: #FFB000; text-decoration: none; }
+    a:hover { color: #FFC94D; text-decoration: underline; }
+    button { background: #FFB000; color: #0B0C0E; border: none; padding: 8px 16px; font-weight: 700; cursor: pointer; font-family: 'JetBrains Mono', monospace; font-size: 14px; }
+    button:hover { background: #FFC94D; }
+    .page { display: none; }
+    .page.active { display: block; }
+    .container { max-width: 900px; margin: 0 auto; padding: 40px; }
+    .hub-container { max-width: 1100px; margin: 0 auto; padding: 80px 40px; }
+    h1 { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 72px; line-height: 1; letter-spacing: 1px; text-transform: uppercase; margin: 0 0 16px; }
+    h2 { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 32px; letter-spacing: 0.5px; text-transform: uppercase; margin: 32px 0 24px 0; }
+    .card { background: #121317; border: 1px solid #26282E; padding: 32px; cursor: pointer; transition: all 0.3s ease; margin-bottom: 24px; }
+    .card:hover { background: #17181D; border-color: #FFB000; }
+    .card h3 { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 20px; letter-spacing: 1px; text-transform: uppercase; margin: 0 0 12px; }
+    .card p { color: #8B8E96; font-size: 12px; line-height: 1.7; margin: 0 0 8px; }
+    .card-action { color: #FFB000; font-size: 11px; letter-spacing: 1.5px; }
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+    th, td { padding: 10px; text-align: left; border-bottom: 1px solid #26282E; color: #E8E6E0; }
+    th { background: #1A1C20; font-weight: 700; }
+    header { margin-bottom: 80px; }
+    .tag { background: #FFB000; color: #0B0C0E; font-weight: 700; font-size: 11px; letter-spacing: 2px; padding: 4px 10px; display: inline-block; margin-right: 12px; }
+    .subtitle { color: #8B8E96; font-size: 11px; letter-spacing: 1.5px; display: inline-block; }
+    p { color: #B4B6BC; font-size: 14px; line-height: 1.8; }
+    .back-btn { margin-bottom: 40px; }
+  </style>
+</head>
+<body>
+
+<div id="hub" class="page active">
+  <div class="hub-container">
+    <header>
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+        <div><span class="tag">BIG TURBO VR6</span><span class="subtitle">2000 VW — Precision 6262 · EMU Black · E85</span></div>
+        <a href="https://timegan.ai" style="font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 2px; color: #FFB000; text-decoration: none; border: 1px solid #FFB000; padding: 5px 11px; border-radius: 3px;">timegan.ai</a>
+      </div>
+      <h1>VR6 Build Hub</h1>
+      <p style="max-width: 800px;">Engineering design project + active build. Turbocharger system, air-water intercooler, standalone management, and the path from naturally aspirated to track-ready. Everything documented — the story, the tracker, the engineering.</p>
+    </header>
+
+    <section style="margin-bottom: 80px;">
+      <h2>Pages</h2>
+      <div class="card" style="cursor: pointer;" id="nav-story">
+        <h3>Build Story</h3>
+        <p>The narrative. Why this build exists, what problem it solves, how the engineering led to the design. Stock engine to turbocharged standalone — the journey in prose.</p>
+        <span class="card-action">READ →</span>
+      </div>
+      <div class="card" style="cursor: pointer;" id="nav-tracker">
+        <h3>Build Tracker</h3>
+        <p>Live checklist. What's done, what's next. 9 phases from cooling system to track prep. Checkboxes save in your browser. Real-time build log with photos.</p>
+        <span class="card-action">TRACK PROGRESS →</span>
+      </div>
+      <div class="card" style="cursor: pointer;" id="nav-thesis">
+        <h3>Engineering Report</h3>
+        <p>Full thesis. Turbocharger selection, compressor map, intercooler sizing, thermal modeling, dyno validation, speed-density conversion, E85 integration. Every equation, every number, every result.</p>
+        <span class="card-action">DEEP DIVE →</span>
+      </div>
+      <div class="card" style="cursor: pointer;" id="nav-config">
+        <h3>Livery Configurator</h3>
+        <p>Forza-style spec builder. Change paint, drop the ride height, swap between OZ Racing wheel designs. Build the look, share the spec.</p>
+        <span class="card-action">CUSTOMIZE →</span>
+      </div>
+    </section>
+
+    <section style="margin-bottom: 80px;">
+      <h2>Quick Facts</h2>
+      <table>
+        <tr><th>PLATFORM</th><th>TURBO SYSTEM</th><th>CHARGE COOLING</th></tr>
+        <tr><td>2000 VW VR6 12v (AFP)<br>2.8L naturally aspirated baseline</td><td>Precision 6262 journal bearing<br>18 psi boost, 2.22 pressure ratio</td><td>Air-to-water intercooler (custom)<br>10–16 °F cooler than air-to-air</td></tr>
+        <tr><th>ENGINE MANAGEMENT</th><th>TRANSMISSION</th><th>SUSPENSION</th></tr>
+        <tr><td>Ecumaster EMU Black standalone<br>Speed-density, E85 flex fuel</td><td>02J 5-speed manual<br>Cryogenic gear treatment</td><td>KW V2 coilovers<br>Grayfab tubular control arms (planned)</td></tr>
+      </table>
+    </section>
+
+    <section>
+      <h2>The Mission</h2>
+      <p>Get it on the road. Keep it there. Reliable miles first, track miles later.</p>
+      <p>The engineering is done. The design is proven. The build is closing. What's left is the work: cooling system, electrical, fuel, boost control, thermal validation under real load. Every system deliberate. Every test measured. Every mile earned.</p>
+    </section>
+
+    <footer style="margin-top: 100px; padding-top: 28px; border-top: 1px solid #26282E; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; color: #5A5D64; font-size: 12px; letter-spacing: 1px;">
+      <span>BIG TURBO VR6 BUILD · DOCUMENTED START TO FINISH</span>
+      <a href="https://timegan.ai" style="color: #FFB000; text-decoration: none; letter-spacing: 2px;">timegan.ai</a>
+    </footer>
+  </div>
+</div>
+
+<div id="story" class="page">
+  <div class="container">
+    <div class="back-btn"><button id="btn-back-story">← Back to Hub</button></div>
+    <h1 style="font-size: 64px;">Complete Turbocharger System</h1>
+    <h2 style="color: #FFB000; font-size: 22px; font-weight: 600; text-transform: none; margin-top: 0;">Design & Validation on a 2.8L VR6</h2>
+    <p style="max-width: 800px; color: #8B8E96;">From naturally aspirated to turbocharged. Complete turbocharger selection, compressor & turbine sizing, charge cooling design, thermal validation through dyno testing, and steady-state analysis. Full engineering calculations with all variables, equations, and measured data.</p>
+
+    <h2>Engine Specifications</h2>
+    <p><strong>Displacement:</strong> 2.8L (183.07 CID)</p>
+    <p><strong>Target boost:</strong> 18 psi gauge (2.22 pressure ratio)</p>
+    <p><strong>Turbocharger:</strong> Precision 6262 journal bearing</p>
+
+    <h2>Turbocharger Airflow Calculations</h2>
+    <p><strong>Baseline volumetric flow at 2000 rpm, 85% VE:</strong><br>V̇ = (183.07 × 2000 × 85%) / 3,456 = 91.23 CFM</p>
+    <p><strong>At 18 psi boost pressure:</strong><br>Pressure ratio = 2.22<br>Corrected mass flow = 5.6 kg/s (45.2 lb/min)<br>Compressor efficiency: 76%<br>Operating point: centered in 75% efficiency island</p>
+
+    <h2>Heat Transfer Analysis</h2>
+    <p><strong>Air-to-Water vs Air-to-Air (Dyno):</strong></p>
+    <table>
+      <tr><th>Configuration</th><th>Charge Temp</th><th>Δ Above Ambient</th></tr>
+      <tr><td><strong>Air-to-Water</strong></td><td>112–127 °F</td><td>10–19 °F</td></tr>
+      <tr><td><strong>Air-to-Air</strong></td><td>128–143 °F</td><td>20–35 °F</td></tr>
+      <tr><td><strong>Advantage</strong></td><td colspan="2"><strong>10–16 °F cooler</strong></td></tr>
+    </table>
+
+    <h2>Steady-State Thermal Operating Points</h2>
+    <table>
+      <tr><th>Condition</th><th>Charge Air Out</th><th>Density Gain</th><th>Heat Load</th></tr>
+      <tr><td>Sea level, 90 °F (binding)</td><td>78 °C (172 °F)</td><td>1.13×</td><td>17.4 kW</td></tr>
+      <tr><td>Sea level, 50 °F</td><td>53 °C (128 °F)</td><td>1.12×</td><td>17.2 kW</td></tr>
+      <tr><td>Snoqualmie Pass, 3,000 ft</td><td>72 °C (162 °F)</td><td>1.13×</td><td>17.9 kW</td></tr>
+    </table>
+
+    <h2>Engine Management: Speed-Density Conversion</h2>
+    <p><strong>Problem:</strong> Unitronic ECU couldn't read the MAF signal. On boost, the car would start building pressure then go lean and kill itself. No sensor input meant no correction. Dead ECU, no support.</p>
+    <p><strong>Solution:</strong> Ecumaster EMU Black standalone, MAP-based fueling, measured volumetric efficiency table. No MAF dependency. Just manifold pressure, intake air temperature, and a VE table built during real tuning. E85 fuel (105 RON) + electronic boost control mapped by gear, IAT, and coolant soak state.</p>
+
+    <h2>Current Development: E85 & Electronic Boost</h2>
+    <p>E85 knock resistance (105 RON) + latent heat (840 kJ/kg) provides 15–25 °C charge cooling from fuel evaporation alone. Electronic wastegate allows active boost management instead of fixed spring pressure.</p>
+
+    <h2>Conclusion</h2>
+    <p>The air-water intercooler system met its design objective. Under back-to-back dynamometer testing, it delivered 10–16 °F cooler charge air than a comparable air-to-air installation. Steady-state thermal modeling confirms 1.12–1.14× net charge density gain despite 1.5 psi pressure loss. MAF-to-MAP conversion resolved metering failure. E85 + electronic boost transforms the system into an actively-managed, measured strategy.</p>
+  </div>
+</div>
+
+<div id="tracker" class="page">
+  <div class="container">
+    <div class="back-btn"><button id="btn-back-tracker">← Back to Hub</button></div>
+    <h1>Build Tracker</h1>
+    <p>Live checklist — work top to bottom. Checkboxes save in your browser.</p>
+    <div id="progress" style="margin: 32px 0; padding: 24px; background: #121317; border: 1px solid #26282E;">
+      <div style="font-size: 28px; font-weight: 700; color: #FFB000; margin-bottom: 8px;" id="progressNum">0%</div>
+      <div style="background: #0B0C0E; height: 8px; border-radius: 4px; overflow: hidden;">
+        <div id="progressBar" style="background: #FFB000; height: 100%; width: 0%; transition: width 0.3s ease;"></div>
+      </div>
+    </div>
+
+    <h2>Phase 1: Cooling System</h2>
+    <div id="phase1" style="margin-bottom: 32px;"></div>
+
+    <h2>Phase 2: Electrical & Wiring</h2>
+    <div id="phase2" style="margin-bottom: 32px;"></div>
+
+    <h2>Phase 3: Fuel & Boost</h2>
+    <div id="phase3" style="margin-bottom: 32px;"></div>
+
+    <h2>Phase 4: Engine Bay Hardware</h2>
+    <div id="phase4" style="margin-bottom: 32px;"></div>
+
+    <h2>Phase 5: Suspension & Chassis</h2>
+    <div id="phase5" style="margin-bottom: 32px;"></div>
+
+    <h2>Phase 6: Drivetrain</h2>
+    <div id="phase6" style="margin-bottom: 32px;"></div>
+
+    <h2>Phase 7: Interior & Gauges</h2>
+    <div id="phase7" style="margin-bottom: 32px;"></div>
+
+    <h2>Phase 8: Tuning & Validation</h2>
+    <div id="phase8" style="margin-bottom: 32px;"></div>
+
+    <h2>Phase 9: Track Prep</h2>
+    <div id="phase9" style="margin-bottom: 32px;"></div>
+  </div>
+</div>
+
+<div id="thesis" class="page">
+  <div class="container">
+    <div class="back-btn"><button id="btn-back-thesis">← Back to Hub</button></div>
+    <h1 style="font-size: 64px;">From Stock to Standalone</h1>
+    <p style="max-width: 750px; color: #8B8E96;">A 2.8L VR6 engine that started stock. No turbo. No intercooler. No standalone management. This is the engineering project that changed that — and the build that proved it works.</p>
+
+    <h2>The Project</h2>
+    <p>A college capstone design project. The requirement was simple: design something. The outcome was less simple.</p>
+    <p>Turbocharging a naturally aspirated engine requires charge cooling. The market had no air-to-water kit for this platform. So I designed one from first principles — compressor sizing, heat exchanger selection, thermal modeling, and validation through dynamometer testing.</p>
+    <p>The dyno proved what the equations predicted: 10–16 °F cooler charge air than an air-to-air system under identical conditions. Water-side heat transfer wins. The system works. It still works.</p>
+
+    <h2>The Problem</h2>
+    <p>The Unitronic Stage 3 ECU stopped reading the MAF sensor entirely. Not a calibration issue — the ECU couldn't detect the signal at all. Wiring was clean. Sensors tested fine. The ECU was fried or corrupted, and Unitronic refused to help.</p>
+    <p>On boost, the car would start strong but stumble hard once pressure built. No MAF reading meant no fuel correction. The map went full lean trying to manage boost on a naturally-aspirated tune. The car killed itself trying to breathe.</p>
+    <p>Hardware was fine. Software was the problem — and there was no way forward with a dead ECU and no support.</p>
+
+    <h2>The Solution</h2>
+    <p>Rewire everything from scratch. New harness, clean connections, every signal verified. Suddenly the ECU read the MAF. The car ran. Finally.</p>
+    <p>One rip from a stop sign. Full throttle. The BBM fuel rail brackets weren't rated for the inertia load. They bent, injectors unseated, raw fuel everywhere. Engine fire. April 2017.</p>
+    <p>Got the car out. Entire body harness torched — couldn't trust anything that survived the heat. New loom, new connectors, every wire from blank slate. That's when standalone became non-negotiable.</p>
+
+    <h2>Standalone: The Only Way Forward</h2>
+    <p>An Ecumaster EMU Black. Clean sheet, no legacy baggage. Speed-density tuning — manifold pressure and intake air temperature, volumetric efficiency table measured during real runs. No MAF dependency. No factory assumptions.</p>
+    <p>E85 fuel. 105 RON knock resistance, latent heat cooling the charge 15–25 °C from fuel evaporation alone. Electronic boost control mapped by gear, IAT, and coolant soak. Every system measured. Every parameter earned through testing.</p>
+    <p>Cryogenic gear treatment. Battery to the trunk. Dual fans wired to the standalone. Custom exhaust with EGT. In-car laptop for real-time tuning. Second fuse panel inside for gauges and data acquisition. Every system deliberate. Every wire a choice. Every pipe a calculation.</p>
+
+    <h2>The Engineering</h2>
+    <p>Precision 6262 turbocharger. 18 psi boost. Compressor operating point centered in the 75% efficiency island — safe surge margin, safe choke margin, right where the map wants to be.</p>
+    <p>Air-to-water intercooler custom-sized for 5.6 kg/s charge airflow. Heat exchanger UA = 120.27 W/K at the core, 800 W/K system-wide at 40 mph equivalent airflow. Core effectiveness 0.70, pressure loss 1.5 psi — short piping means temperature recovery outweighs pressure drop by a wide margin.</p>
+    <p>Steady-state thermal envelope locked by the hot sea-level day: 90 °F ambient, charge air soaks to 78 °C (172 °F) under sustained load. Net charge density gain 1.13× even accounting for pressure drop. That's the design working exactly as predicted.</p>
+    <p>Everything calculated. Everything validated. Everything measured.</p>
+
+    <h2>The Build</h2>
+    <p>The intake manifold was stock — split runners, unequal distribution. I chopped it. Custom cast elbow welded in with a Nubworks R32 throttle body flange. End-cap welded at an angle so all six cylinders see equal air. No more adapter plates. No more compromises.</p>
+    <p>The intercooler mounting went from a through-bolt through the plenum wall to a welded bung. Stronger. Cleaner. More reliable under boost cycling stress.</p>
+    <p>The wiring started as a converter harness bolted to factory loom. It's now a complete motorsport harness with Duestsch connectors, proper grounds, and power distribution that passes the megohm check.</p>
+    <p>Every system deliberate. Every wire a choice. Every pipe a calculation.</p>
+    <p>The goal now is simple: get it back on the road. Reliable miles first. Track miles later.</p>
+  </div>
+</div>
+
+<div id="config" class="page">
+  <div class="container" style="max-width: 1000px;">
+    <div class="back-btn"><button id="btn-back-config">← Back to Hub</button></div>
+    <h1 style="font-size: 56px;">Livery Configurator</h1>
+    <p style="max-width: 700px; color: #8B8E96;">Build the spec. Change paint, drop the ride height, swap wheels. This is a MK4 Golf 2-door — the platform this whole build is based on.</p>
+
+    <div style="background: linear-gradient(160deg, #1A1C22 0%, #0E0F13 100%); border: 1px solid #26282E; border-radius: 6px; padding: 40px; margin: 32px 0; position: relative; overflow: hidden;">
+      <div style="position: absolute; top: 16px; left: 20px; font-size: 11px; letter-spacing: 2px; color: #8B8E96;">GARAGE · 2000 VW GOLF VR6-T</div>
+      <svg id="carSvg" viewBox="0 0 640 320" style="width: 100%; height: auto; display: block; margin-top: 20px;" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="320" cy="290" rx="270" ry="16" fill="#000" opacity="0.4"></ellipse>
+        <g id="carBody">
+          <path id="bodyPaint" d="M 70 210 L 70 175 Q 72 155 110 150 L 175 108 Q 190 96 220 94 L 400 94 Q 440 95 470 118 L 545 150 Q 580 156 585 178 L 585 210 Z"
+            fill="#C41E1E" stroke="#000" stroke-width="2"></path>
+          <path d="M 190 112 Q 200 100 224 100 L 300 100 L 300 148 L 168 148 Z" fill="#0B0C0E" opacity="0.82"></path>
+          <path d="M 312 100 L 392 100 Q 428 102 452 122 L 470 148 L 312 148 Z" fill="#0B0C0E" opacity="0.82"></path>
+          <rect x="304" y="100" width="6" height="48" fill="#000"></rect>
+          <path id="bodyLower" d="M 70 210 L 585 210 L 585 224 L 70 224 Z" fill="#000" opacity="0.35"></path>
+          <ellipse cx="80" cy="185" rx="8" ry="12" fill="#FFD9A0" opacity="0.9"></ellipse>
+          <rect x="560" y="176" width="22" height="12" rx="2" fill="#E03030"></rect>
+        </g>
+        <g id="wheelFront"></g>
+        <g id="wheelRear"></g>
+      </svg>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+      <div>
+        <h2 style="font-size: 22px; margin-top: 0;">Paint</h2>
+        <div id="colorSwatches" style="display: flex; gap: 12px; flex-wrap: wrap;"></div>
+      </div>
+      <div>
+        <h2 style="font-size: 22px; margin-top: 0;">Ride Height</h2>
+        <input type="range" id="heightSlider" min="0" max="40" value="28" style="width: 100%; accent-color: #FFB000;">
+        <div style="display: flex; justify-content: space-between; font-size: 11px; color: #8B8E96; letter-spacing: 1px; margin-top: 4px;"><span>SLAMMED</span><span id="heightVal">-10mm</span><span>STOCK</span></div>
+      </div>
+      <div style="grid-column: 1 / -1;">
+        <h2 style="font-size: 22px;">OZ Racing Wheels</h2>
+        <div id="wheelSwatches" style="display: flex; gap: 12px; flex-wrap: wrap;"></div>
+      </div>
+    </div>
+
+    <div style="margin-top: 32px; padding: 20px; background: #121317; border: 1px solid #26282E; border-radius: 4px;">
+      <div style="font-size: 11px; letter-spacing: 2px; color: #8B8E96; margin-bottom: 8px;">CURRENT SPEC</div>
+      <div id="specReadout" style="font-size: 15px; color: #E8E6E0;"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Navigation
+  document.getElementById('nav-story').addEventListener('click', function() { goToPage('story'); });
+  document.getElementById('nav-tracker').addEventListener('click', function() { goToPage('tracker'); });
+  document.getElementById('nav-thesis').addEventListener('click', function() { goToPage('thesis'); });
+  document.getElementById('nav-config').addEventListener('click', function() { goToPage('config'); });
+  document.getElementById('btn-back-story').addEventListener('click', function() { goToPage('hub'); });
+  document.getElementById('btn-back-tracker').addEventListener('click', function() { goToPage('hub'); });
+  document.getElementById('btn-back-thesis').addEventListener('click', function() { goToPage('hub'); });
+  document.getElementById('btn-back-config').addEventListener('click', function() { goToPage('hub'); });
+
+  function goToPage(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(page).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  // Tracker data
+  const tasks = {
+    phase1: [
+      { id: 'p1t1', label: 'Radiator replaced, ends converted to -16 AN', done: true },
+      { id: 'p1t2', label: 'Entire coolant system converted to metal', done: true },
+      { id: 'p1t3', label: 'Custom thermostat housing', done: true },
+      { id: 'p1t4', label: 'Finalize AN coolant line routing', done: false },
+      { id: 'p1t5', label: 'Mount the swirl pot', done: false },
+      { id: 'p1t6', label: 'Plumb the air-to-water loop', done: false },
+      { id: 'p1t7', label: 'Pressure-test cooling system', done: false }
+    ],
+    phase2: [
+      { id: 'p2t1', label: 'Fuel system complete (E85 lines & flex sensor)', done: true },
+      { id: 'p2t2', label: 'Power steering with PTFE lines installed', done: true },
+      { id: 'p2t3', label: 'Standalone ECU wiring with motorsport harness', done: false },
+      { id: 'p2t4', label: 'Complete negative-side grounds & distribution', done: false },
+      { id: 'p2t5', label: 'Wire relays (A2W pump, after-run pump, dual fans, horns)', done: false },
+      { id: 'p2t6', label: 'Second fuse panel for gauges & in-car laptop', done: false }
+    ],
+    phase3: [
+      { id: 'p3t1', label: 'E85 flex fuel blend tables finalized', done: false },
+      { id: 'p3t2', label: 'Confirm injector & pump flow rates', done: false },
+      { id: 'p3t3', label: 'Pressure-test fuel system', done: false },
+      { id: 'p3t4', label: 'Boost control mapping (gear-based strategy)', done: false }
+    ],
+    phase4: [
+      { id: 'p4t1', label: 'Alternator fully installed (bolts behind mount)', done: false },
+      { id: 'p4t2', label: 'Intake manifold chopped & welded (R32 TB flange)', done: false },
+      { id: 'p4t3', label: 'Cast elbow welded, end-cap angled for equal distribution', done: false },
+      { id: 'p4t4', label: 'AWIC mounting converted to welded bung', done: false },
+      { id: 'p4t5', label: 'Boost path piping finalized', done: false }
+    ],
+    phase5: [
+      { id: 'p5t1', label: 'KW V2 coilovers installed & refreshed', done: false },
+      { id: 'p5t2', label: 'Rear sway bar installed', done: true },
+      { id: 'p5t3', label: 'Grayfab tubular control arms installed', done: false }
+    ],
+    phase6: [
+      { id: 'p6t1', label: 'Transmission gears (cryogenic treatment complete)', done: true },
+      { id: 'p6t2', label: '500 hp axles installed', done: true },
+      { id: 'p6t3', label: 'Transmission reassembled & tested', done: false }
+    ],
+    phase7: [
+      { id: 'p7t1', label: 'Oil pressure gauge installed', done: false },
+      { id: 'p7t2', label: 'A/F ratio gauge installed', done: false },
+      { id: 'p7t3', label: 'Coolant temp gauge (AWIC res) installed', done: false },
+      { id: 'p7t4', label: 'Boost/vacuum gauge installed', done: false },
+      { id: 'p7t5', label: 'In-car laptop mounted & wired', done: false }
+    ],
+    phase8: [
+      { id: 'p8t1', label: 'Base tune on EMU Black standalone', done: true },
+      { id: 'p8t2', label: 'Dyno run (data acquisition)', done: false },
+      { id: 'p8t3', label: 'Street tuning (idle, transient, load tables)', done: false },
+      { id: 'p8t4', label: 'E85 vs gasoline blend validation', done: false }
+    ],
+    phase9: [
+      { id: 'p9t1', label: 'Safety equipment check (fuel cell, harness, etc)', done: false },
+      { id: 'p9t2', label: 'Cooling system flow-test under load', done: false },
+      { id: 'p9t3', label: 'First track session (data-logging run)', done: false }
+    ]
+  };
+
+  function initTracker() {
+    const saved = localStorage.getItem('vr6_tracker');
+    if (saved) {
+      const state = JSON.parse(saved);
+      Object.keys(tasks).forEach(phase => {
+        tasks[phase].forEach(task => {
+          task.done = state[task.id] || false;
+        });
+      });
+    }
+    renderTracker();
+  }
+
+  function renderTracker() {
+    Object.keys(tasks).forEach(phase => {
+      const container = document.getElementById(phase);
+      if (!container) return;
+      container.innerHTML = '';
+      tasks[phase].forEach(task => {
+        const item = document.createElement('div');
+        item.style.cssText = 'display: flex; align-items: center; padding: 12px; margin-bottom: 8px; background: #121317; border: 1px solid #26282E; border-radius: 4px; cursor: pointer; transition: all 0.2s;';
+        item.onmouseover = () => item.style.borderColor = '#FFB000';
+        item.onmouseout = () => item.style.borderColor = '#26282E';
+        
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = task.done;
+        checkbox.style.cssText = 'width: 20px; height: 20px; cursor: pointer; margin-right: 16px; accent-color: #FFB000;';
+        checkbox.onchange = () => toggleTask(task.id, checkbox.checked);
+        
+        const label = document.createElement('label');
+        label.textContent = task.label;
+        label.style.cssText = `flex: 1; cursor: pointer; color: ${task.done ? '#8B8E96' : '#E8E6E0'}; text-decoration: ${task.done ? 'line-through' : 'none'};`;
+        
+        item.appendChild(checkbox);
+        item.appendChild(label);
+        container.appendChild(item);
+      });
+    });
+    updateProgress();
+  }
+
+  function toggleTask(taskId, done) {
+    Object.keys(tasks).forEach(phase => {
+      tasks[phase].forEach(task => {
+        if (task.id === taskId) task.done = done;
+      });
+    });
+    saveTracker();
+    renderTracker();
+  }
+
+  function saveTracker() {
+    const state = {};
+    Object.keys(tasks).forEach(phase => {
+      tasks[phase].forEach(task => {
+        state[task.id] = task.done;
+      });
+    });
+    localStorage.setItem('vr6_tracker', JSON.stringify(state));
+  }
+
+  function updateProgress() {
+    let total = 0, complete = 0;
+    Object.keys(tasks).forEach(phase => {
+      tasks[phase].forEach(task => {
+        total++;
+        if (task.done) complete++;
+      });
+    });
+    const pct = Math.round((complete / total) * 100);
+    document.getElementById('progressNum').textContent = pct + '% · ' + complete + '/' + total;
+    document.getElementById('progressBar').style.width = pct + '%';
+  }
+
+  // Init on load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTracker);
+  } else {
+    initTracker();
+  }
+
+  // ===== Configurator =====
+  const colors = [
+    { name: 'Tornado Red', hex: '#C41E1E' },
+    { name: 'Reflex Silver', hex: '#B8BCC0' },
+    { name: 'Deep Black', hex: '#141518' },
+    { name: 'Candy White', hex: '#EDEDE8' },
+    { name: 'Techno Blue', hex: '#1E3A8C' },
+    { name: 'Anthracite', hex: '#3A3E44' }
+  ];
+
+  const wheels = [
+    { name: 'OZ Superturismo', spokes: 5, hex: '#1C1E22', accent: '#C0C4C8' },
+    { name: 'OZ Ultraleggera', spokes: 5, hex: '#2A2C30', accent: '#8B8E96' },
+    { name: 'OZ Racing Alleggerita', spokes: 8, hex: '#0E0F13', accent: '#D4A017' },
+    { name: 'OZ Futura (Mesh)', spokes: 12, hex: '#26282E', accent: '#B8BCC0' }
+  ];
+
+  const config = { color: colors[0], wheel: wheels[0], drop: 28 };
+
+  function wheelSvg(cx, cy, r, w) {
+    let spokes = '';
+    for (let i = 0; i < w.spokes; i++) {
+      const ang = (i / w.spokes) * Math.PI * 2;
+      const x2 = cx + Math.cos(ang) * (r - 6);
+      const y2 = cy + Math.sin(ang) * (r - 6);
+      spokes += `<line x1="${cx}" y1="${cy}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${w.accent}" stroke-width="3"></line>`;
+    }
+    return `
+      <circle cx="${cx}" cy="${cy}" r="${r + 8}" fill="#0B0C0E" stroke="#000" stroke-width="2"></circle>
+      <circle cx="${cx}" cy="${cy}" r="${r}" fill="${w.hex}" stroke="${w.accent}" stroke-width="2"></circle>
+      ${spokes}
+      <circle cx="${cx}" cy="${cy}" r="7" fill="${w.accent}"></circle>
+      <circle cx="${cx}" cy="${cy}" r="3" fill="#0B0C0E"></circle>`;
+  }
+
+  function renderCar() {
+    document.getElementById('bodyPaint').setAttribute('fill', config.color.hex);
+    // Ride height: slider 40 = STOCK (0mm, natural), 0 = SLAMMED (body drops onto wheels, negative offset)
+    const bodyY = (40 - config.drop) * 0.5;
+    document.getElementById('carBody').setAttribute('transform', `translate(0, ${bodyY})`);
+    document.getElementById('wheelFront').innerHTML = wheelSvg(160, 240, 40, config.wheel);
+    document.getElementById('wheelRear').innerHTML = wheelSvg(490, 240, 40, config.wheel);
+    const dropMm = (config.drop - 40) * 4;
+    document.getElementById('heightVal').textContent = (dropMm > 0 ? '+' : '') + dropMm + 'mm';
+    document.getElementById('specReadout').innerHTML =
+      `<strong style="color:#FFB000;">${config.color.name}</strong> · ${config.wheel.name} · Ride height <strong>${(dropMm > 0 ? '+' : '') + dropMm}mm</strong> from stock`;
+  }
+
+  function initConfig() {
+    const cs = document.getElementById('colorSwatches');
+    colors.forEach((c, i) => {
+      const b = document.createElement('button');
+      b.title = c.name;
+      b.style.cssText = `width: 44px; height: 44px; border-radius: 50%; background: ${c.hex}; border: 2px solid ${i === 0 ? '#FFB000' : '#26282E'}; cursor: pointer; padding: 0;`;
+      b.onclick = () => {
+        config.color = c;
+        [...cs.children].forEach(x => x.style.borderColor = '#26282E');
+        b.style.borderColor = '#FFB000';
+        renderCar();
+      };
+      cs.appendChild(b);
+    });
+
+    const ws = document.getElementById('wheelSwatches');
+    wheels.forEach((w, i) => {
+      const b = document.createElement('button');
+      b.style.cssText = `display: flex; flex-direction: column; align-items: center; gap: 8px; background: ${i === 0 ? '#1A1C22' : '#121317'}; border: 2px solid ${i === 0 ? '#FFB000' : '#26282E'}; border-radius: 6px; padding: 12px 16px; cursor: pointer; color: #E8E6E0; font-family: 'JetBrains Mono', monospace;`;
+      b.innerHTML = `<svg viewBox="0 0 90 90" width="60" height="60">${wheelSvg(45, 45, 32, w)}</svg><span style="font-size: 10px; letter-spacing: 0.5px;">${w.name}</span>`;
+      b.onclick = () => {
+        config.wheel = w;
+        [...ws.children].forEach(x => { x.style.borderColor = '#26282E'; x.style.background = '#121317'; });
+        b.style.borderColor = '#FFB000';
+        b.style.background = '#1A1C22';
+        renderCar();
+      };
+      ws.appendChild(b);
+    });
+
+    const slider = document.getElementById('heightSlider');
+    slider.addEventListener('input', () => {
+      config.drop = parseInt(slider.value);
+      renderCar();
+    });
+
+    renderCar();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initConfig);
+  } else {
+    initConfig();
+  }
+</script>
+
+</body>
+</html>
