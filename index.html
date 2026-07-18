@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-  <title>Big Turbo VR6 Build · timegan.ai</title>
+  <title>VR6-T · timegan.ai</title>
   <style>
     html, body { margin: 0; padding: 0; background: #0B0C0E; font-family: 'JetBrains Mono', monospace; color: #E8E6E0; }
     * { box-sizing: border-box; }
@@ -32,6 +32,12 @@
     .subtitle { color: #8B8E96; font-size: 11px; letter-spacing: 1.5px; display: inline-block; }
     p { color: #B4B6BC; font-size: 14px; line-height: 1.8; }
     .back-btn { margin-bottom: 40px; }
+    h3.sec { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 22px; letter-spacing: 0.5px; text-transform: uppercase; margin: 28px 0 12px; color: #E8E6E0; }
+    .eq { background: #121317; border-left: 3px solid #FFB000; padding: 14px 18px; margin: 14px 0; font-size: 15px; color: #E8E6E0; line-height: 1.9; overflow-x: auto; }
+    .eq .num { float: right; color: #5A5D64; font-size: 13px; }
+    .eq var { font-style: italic; color: #FFC94D; }
+    .lead { max-width: 800px; color: #8B8E96; }
+    .kicker { color: #FFB000; font-size: 12px; letter-spacing: 3px; text-transform: uppercase; margin: 48px 0 0; font-weight: 700; }
   </style>
 </head>
 <body>
@@ -50,19 +56,14 @@
     <section style="margin-bottom: 80px;">
       <h2>Pages</h2>
       <div class="card" style="cursor: pointer;" id="nav-story">
-        <h3>Build Story</h3>
-        <p>The narrative. Why this build exists, what problem it solves, how the engineering led to the design. Stock engine to turbocharged standalone — the journey in prose.</p>
-        <span class="card-action">READ →</span>
+        <h3>Story &amp; Engineering</h3>
+        <p>The complete account — why this build exists, the fire that forced a rebuild, and the full engineering report behind it. Turbocharger sizing, compressor map, intercooler and radiator analysis, the NTU method, every equation and Greek variable, dyno validation, and the E85 + electronic-boost development phase.</p>
+        <span class="card-action">READ THE FULL REPORT →</span>
       </div>
       <div class="card" style="cursor: pointer;" id="nav-tracker">
         <h3>Build Tracker</h3>
         <p>Live checklist. What's done, what's next. 9 phases from cooling system to track prep. Checkboxes save in your browser. Real-time build log with photos.</p>
         <span class="card-action">TRACK PROGRESS →</span>
-      </div>
-      <div class="card" style="cursor: pointer;" id="nav-thesis">
-        <h3>Engineering Report</h3>
-        <p>Full thesis. Turbocharger selection, compressor map, intercooler sizing, thermal modeling, dyno validation, speed-density conversion, E85 integration. Every equation, every number, every result.</p>
-        <span class="card-action">DEEP DIVE →</span>
       </div>
       <div class="card" style="cursor: pointer;" id="nav-config">
         <h3>Livery Configurator</h3>
@@ -97,45 +98,145 @@
 <div id="story" class="page">
   <div class="container">
     <div class="back-btn"><button id="btn-back-story">← Back to Hub</button></div>
-    <h1 style="font-size: 64px;">Complete Turbocharger System</h1>
-    <h2 style="color: #FFB000; font-size: 22px; font-weight: 600; text-transform: none; margin-top: 0;">Design & Validation on a 2.8L VR6</h2>
-    <p style="max-width: 800px; color: #8B8E96;">From naturally aspirated to turbocharged. Complete turbocharger selection, compressor & turbine sizing, charge cooling design, thermal validation through dyno testing, and steady-state analysis. Full engineering calculations with all variables, equations, and measured data.</p>
+    <p class="kicker">Story &amp; Engineering</p>
+    <h1 style="font-size: 60px;">From Stock to Standalone</h1>
+    <h2 style="color: #FFB000; font-size: 21px; font-weight: 600; text-transform: none; margin-top: 0;">Air-Water Intercooler — Design, Analysis &amp; Validation on a Turbocharged VR6</h2>
+    <p class="lead">A 2.8L VR6 that started naturally aspirated. The capstone requirement was to design something real — turbocharging it meant the charge had to be cooled, and no air-water intercooler kit existed for this platform. So the entire system was designed from first principles: turbocharger sizing, heat-exchanger selection, coupled thermal modeling, and dynamometer validation. This is the full report, followed by everything that happened after graduation.</p>
 
-    <h2>Engine Specifications</h2>
-    <p><strong>Displacement:</strong> 2.8L (183.07 CID)</p>
-    <p><strong>Target boost:</strong> 18 psi gauge (2.22 pressure ratio)</p>
-    <p><strong>Turbocharger:</strong> Precision 6262 journal bearing</p>
+    <p class="kicker">The Narrative</p>
+    <h2>The Problem That Started It</h2>
+    <p>The car ran Unitronic Stage 3 software — a mass-airflow strategy inherited from the factory VR6 calibration. The MAF never produced a usable signal at this power level. Wiring was clean. Sensors tested fine. The airflow analysis below predicts exactly why it couldn't work: the factory housing is calibrated for a naturally aspirated engine, and the turbo setup pushed the sensing element far outside its envelope in two directions at once.</p>
+    <p>On boost, the car would build pressure and then go lean and pull itself apart trying to breathe. No airflow reading meant no fuel correction. It wasn't a tune that needed dialing in — it was a metering architecture that couldn't measure what the engine was doing.</p>
 
-    <h2>Turbocharger Airflow Calculations</h2>
-    <p><strong>Baseline volumetric flow at 2000 rpm, 85% VE:</strong><br>V̇ = (183.07 × 2000 × 85%) / 3,456 = 91.23 CFM</p>
-    <p><strong>At 18 psi boost pressure:</strong><br>Pressure ratio = 2.22<br>Corrected mass flow = 5.6 kg/s (45.2 lb/min)<br>Compressor efficiency: 76%<br>Operating point: centered in 75% efficiency island</p>
+    <h2>The Fire</h2>
+    <p>After a full harness rewire, the MAF finally read and the car ran. Then, one hard pull from a stop sign — full throttle — the BBM fuel rail brackets bent under the inertia load, the injectors unseated, and raw fuel found a source. Engine fire. April 2017. The car was saved, but the entire body harness was torched. Nothing that survived the heat could be trusted.</p>
 
-    <h2>Heat Transfer Analysis</h2>
-    <p><strong>Air-to-Water vs Air-to-Air (Dyno):</strong></p>
+    <h2>The Decision: Standalone</h2>
+    <p>The rebuild became the moment to stop patching a factory architecture and start over. An Ecumaster EMU Black standalone, running speed-density — manifold pressure, intake air temperature, RPM, and a measured volumetric efficiency table. No MAF in the intake tract at all. The metering problem the calculations had predicted simply disappeared, and the flat 85% VE assumption in the original report was replaced with a real, tuned table. Everything downstream — E85, electronic boost, EGT instrumentation — follows from that decision.</p>
+
+    <p class="kicker">The Report</p>
+    <h2>3. Theory</h2>
+    <h3 class="sec">3.1 Turbocharger Specifications</h3>
+    <p>The compressor's maximum airflow was calculated first to confirm the Precision 6262 is correctly sized for the VR6. The theoretical (atmospheric) mass air flow rate:</p>
+    <div class="eq"><span class="num">[1]</span><var>V̇</var> (CFM) = (CID × RPM × VE) / 3456</div>
+    <p>where CID is displacement in cubic inches, RPM is engine speed, VE is volumetric efficiency, and 3456 is the unit conversion carrying the ½ factor for a four-stroke (which exhausts every other revolution). The design goal is 18 psi of boost, so the pressure ratio is:</p>
+    <div class="eq"><span class="num">[2]</span>PR = (<var>P<sub>b</sub></var> + 14.7) / 14.7</div>
+    <p>The boosted (adjusted) flow, and its mass rate through density <var>ρ</var>:</p>
+    <div class="eq"><span class="num">[3]</span><var>V̇<sub>adj</sub></var> = PR × <var>V̇</var> &nbsp;&nbsp;·&nbsp;&nbsp; <var>ṁ</var> = <var>ρ</var> <var>V̇</var></div>
+    <p>The pressure ratio and adjusted mass flow locate the operating point on the manufacturer's compressor map, confirming it falls inside an efficient region.</p>
+
+    <h3 class="sec">3.2 Heat Exchanger &amp; Intercooler Analysis</h3>
+    <p>Mass flow rates follow from the volumetric flow (<var>Q</var> = <var>V</var><var>A</var>), known for both air and water:</p>
+    <div class="eq"><span class="num">[4]</span><var>ṁ</var> = <var>ρ</var><var>Q</var></div>
+    <div class="eq"><span class="num">[5]</span><var>q</var> = <var>ṁ</var> <var>c<sub>p</sub></var> (<var>T<sub>i</sub></var> − <var>T<sub>o</sub></var>)</div>
+    <p>Fluid properties (<var>ρ</var>, <var>c<sub>p</sub></var>) are read at the average film temperature <var>θ<sub>f</sub></var>, an approximation to the temperature inside the convection boundary layer:</p>
+    <div class="eq"><span class="num">[6]</span><var>θ<sub>f</sub></var> = (<var>T<sub>i</sub></var> + <var>T<sub>o</sub></var>) / 2</div>
+    <p>Since the exchanger loses no heat externally, air and water heat transfer are equal, which lets any one unknown temperature be solved:</p>
+    <div class="eq"><span class="num">[7]</span><var>q<sub>a</sub></var> = <var>q<sub>w</sub></var></div>
+    <p>The NTU method is then used to size the exchanger. Effectiveness <var>ε</var> depends on which fluid carries the minimum capacitance <var>C</var> = <var>ṁ</var> <var>c<sub>p</sub></var> (uppercase <var>T</var> = warmer fluid, lowercase <var>t</var> = cooler fluid):</p>
+    <div class="eq"><span class="num">[8]</span>if <var>ṁ<sub>c</sub></var> <var>c<sub>p,c</sub></var> &lt; <var>ṁ<sub>h</sub></var> <var>c<sub>p,h</sub></var> &nbsp;→&nbsp; <var>ε</var> = (<var>t<sub>o</sub></var> − <var>t<sub>i</sub></var>) / (<var>T<sub>i</sub></var> − <var>t<sub>i</sub></var>)</div>
+    <div class="eq"><span class="num">[9]</span>if <var>ṁ<sub>c</sub></var> <var>c<sub>p,c</sub></var> &gt; <var>ṁ<sub>h</sub></var> <var>c<sub>p,h</sub></var> &nbsp;→&nbsp; <var>ε</var> = (<var>T<sub>i</sub></var> − <var>T<sub>o</sub></var>) / (<var>T<sub>i</sub></var> − <var>t<sub>i</sub></var>)</div>
+    <div class="eq"><span class="num">[10]</span><var>q</var> = <var>ε</var> (<var>ṁ</var> <var>c<sub>p</sub></var>)<sub>min</sub> (<var>T<sub>i</sub></var> − <var>t<sub>i</sub></var>)</div>
+    <div class="eq"><span class="num">[11]</span>NTU = <var>UA</var> / (<var>ṁ</var> <var>c<sub>p</sub></var>)<sub>min</sub></div>
+    <p>Because a purchased core hides the tube diameter, wall conductivity <var>λ</var>, and convection coefficients <var>h</var>, the product <var>UA</var> is recovered instead through the Log-Mean-Temperature-Difference method with correction factor <var>F</var>:</p>
+    <div class="eq"><span class="num">[12]</span><var>q</var> = <var>UA</var> · <var>F</var> · <var>ΔT<sub>lm</sub></var></div>
+    <div class="eq"><span class="num">[13]</span><var>R</var> = (<var>ṁ</var> <var>c<sub>p</sub></var>)<sub>tube</sub> / (<var>ṁ</var> <var>c<sub>p</sub></var>)<sub>shell</sub></div>
+    <div class="eq"><span class="num">[14]</span><var>S</var> = (<var>t<sub>o</sub></var> − <var>t<sub>i</sub></var>) / (<var>T<sub>i</sub></var> − <var>t<sub>i</sub></var>)</div>
+    <div class="eq"><span class="num">[15]</span><var>ΔT<sub>lm</sub></var> = [(<var>T<sub>i</sub></var> − <var>t<sub>o</sub></var>) − (<var>T<sub>o</sub></var> − <var>t<sub>i</sub></var>)] / ln[(<var>T<sub>i</sub></var> − <var>t<sub>o</sub></var>) / (<var>T<sub>o</sub></var> − <var>t<sub>i</sub></var>)]</div>
+    <div class="eq"><span class="num">[16]</span><var>UA</var> = <var>q</var> / (<var>F</var> <var>ΔT<sub>lm</sub></var>)</div>
+    <p>The same procedure applies to both the intercooler and the radiator — only the temperatures and flow rates change.</p>
+
+    <h2>4. Calculations</h2>
+    <h3 class="sec">4.1 Turbocharger Airflow</h3>
+    <p>Using CID = 183.07, RPM = 2000, VE = 85%:</p>
+    <div class="eq"><var>V̇</var> = (183.07 × 2000 × 0.85) / 3456 = <strong>90.05 CFM</strong></div>
+    <div class="eq">PR = (18 + 14.7) / 14.7 = <strong>2.22</strong></div>
+    <div class="eq"><var>V̇<sub>adj</sub></var> = 90.05 × 2.22 = 200 CFM &nbsp;→&nbsp; <var>ṁ<sub>a</sub></var> = <var>ρ</var> <var>V̇</var> = <strong>0.12 kg/s</strong></div>
+    <p>Plotted on the Precision PT6262 CEA compressor map, the operating point falls centered within the 75% efficiency island — good surge and choke margin.</p>
+    <div style="margin: 20px 0; border: 1px solid #26282E; border-radius: 4px; overflow: hidden;">
+      <div id="compressorDrop" data-photo-id="story-compressor-map" style="min-height: 260px; display: flex; align-items: center; justify-content: center; background: #121317; color: #5A5D64; font-size: 12px; letter-spacing: 1px; text-align: center; cursor: pointer; padding: 40px;">DROP PT6262 COMPRESSOR MAP HERE<br><span style="font-size:10px;">(Figure 7 — operating point in 75% island)</span></div>
+    </div>
+
+    <h3 class="sec">4.2 Radiator — Initial Analysis</h3>
+    <p>Without full system temperatures, the largest radiator that fits behind the stock bumper was selected. Summer racing sets ambient at 90 °F (32.2 °C); water outlet is taken ~30 °F above ambient, inlet at 110 °C.</p>
     <table>
-      <tr><th>Configuration</th><th>Charge Temp</th><th>Δ Above Ambient</th></tr>
-      <tr><td><strong>Air-to-Water</strong></td><td>112–127 °F</td><td>10–19 °F</td></tr>
-      <tr><td><strong>Air-to-Air</strong></td><td>128–143 °F</td><td>20–35 °F</td></tr>
-      <tr><td><strong>Advantage</strong></td><td colspan="2"><strong>10–16 °F cooler</strong></td></tr>
+      <tr><th></th><th>Water (°C)</th><th>Air (°C)</th></tr>
+      <tr><td>Inlet</td><td>110</td><td>32.22</td></tr>
+      <tr><td>Outlet</td><td>48.89</td><td>unknown</td></tr>
     </table>
-
-    <h2>Steady-State Thermal Operating Points</h2>
+    <div class="eq"><var>θ<sub>f,w</sub></var> = (110 + 48.89) / 2 = 79.44 °C &nbsp;·&nbsp; <var>θ<sub>f,a</sub></var> = (32.22 + 60) / 2 = 46.11 °C</div>
     <table>
-      <tr><th>Condition</th><th>Charge Air Out</th><th>Density Gain</th><th>Heat Load</th></tr>
-      <tr><td>Sea level, 90 °F (binding)</td><td>78 °C (172 °F)</td><td>1.13×</td><td>17.4 kW</td></tr>
-      <tr><td>Sea level, 50 °F</td><td>53 °C (128 °F)</td><td>1.12×</td><td>17.2 kW</td></tr>
-      <tr><td>Snoqualmie Pass, 3,000 ft</td><td>72 °C (162 °F)</td><td>1.13×</td><td>17.9 kW</td></tr>
+      <tr><th>Property</th><th>Water</th><th>Air</th></tr>
+      <tr><td><var>ρ</var> (kg/m³)</td><td>972</td><td>1.1</td></tr>
+      <tr><td><var>c<sub>p</sub></var> (J/kg·K)</td><td>4.198 × 10³</td><td>1.009 × 10³</td></tr>
     </table>
+    <p>Water flow from a Bosch Cobra pump (317 gal/hr, 80% eff.). Air frontal area <var>A</var> = 24 × 7 = 168 in² = 0.1084 m², at 40 mph (17.88 m/s):</p>
+    <div class="eq"><var>ṁ<sub>w</sub></var> = <var>ρ</var><var>Q</var> = 972 × 0.000267 = <strong>0.26 kg/s</strong></div>
+    <div class="eq"><var>ṁ<sub>a</sub></var> = <var>ρ</var><var>V</var><var>A</var> = 1.1 × 17.88 × 0.1084 = <strong>2.13 kg/s</strong></div>
+    <div class="eq"><var>q<sub>w</sub></var> = <var>ṁ<sub>w</sub></var> <var>c<sub>p,w</sub></var>(<var>T<sub>i</sub></var> − <var>T<sub>o</sub></var>) = 0.26 × 4.198×10³ × (110 − 48.89) = <strong>66.51 kW</strong></div>
+    <p>Setting <var>q<sub>a</sub></var> = <var>q<sub>w</sub></var> and solving for the air outlet: <var>t<sub>o</sub></var> = <strong>63.25 °C</strong>. Capacitances and effectiveness (air carries the greater capacitance):</p>
+    <div class="eq"><var>C<sub>w</sub></var> = 1.13 × 10³ &nbsp;·&nbsp; <var>C<sub>a</sub></var> = 2.15 × 10³ &nbsp;·&nbsp; <var>ε</var> = (<var>T<sub>i</sub></var> − <var>T<sub>o</sub></var>)/(<var>T<sub>i</sub></var> − <var>t<sub>i</sub></var>) = <strong>0.786</strong></div>
+    <div class="eq"><var>q</var> = <var>ε</var>(<var>ṁ</var><var>c<sub>p</sub></var>)<sub>min</sub>(<var>T<sub>i</sub></var> − <var>t<sub>i</sub></var>) = 66.51 kW ✓ &nbsp;·&nbsp; <var>ΔT<sub>lm</sub></var> = 29.27</div>
+    <div class="eq">NTU = 2.25 &nbsp;·&nbsp; <var>UA</var> = 2452 W/°C &nbsp;·&nbsp; <var>A</var> = 2.11 m² &nbsp;·&nbsp; <var>U</var> = 1162 W/m²·°C</div>
 
-    <h2>Engine Management: Speed-Density Conversion</h2>
-    <p><strong>Problem:</strong> Unitronic ECU couldn't read the MAF signal. On boost, the car would start building pressure then go lean and kill itself. No sensor input meant no correction. Dead ECU, no support.</p>
-    <p><strong>Solution:</strong> Ecumaster EMU Black standalone, MAP-based fueling, measured volumetric efficiency table. No MAF dependency. Just manifold pressure, intake air temperature, and a VE table built during real tuning. E85 fuel (105 RON) + electronic boost control mapped by gear, IAT, and coolant soak state.</p>
+    <h3 class="sec">4.3 Intercooler — Initial Analysis</h3>
+    <p>A similar turbo vehicle showed inlet air temperatures above 110 °C; target IAT should stay under 82 °C.</p>
+    <table>
+      <tr><th></th><th>Water (°C)</th><th>Air (°C)</th></tr>
+      <tr><td>Inlet</td><td>48.89</td><td>110</td></tr>
+      <tr><td>Outlet</td><td>unknown</td><td>82.22</td></tr>
+    </table>
+    <div class="eq"><var>θ<sub>f,w</sub></var> = 51.94 °C &nbsp;·&nbsp; <var>θ<sub>f,a</sub></var> = 96.11 °C</div>
+    <table>
+      <tr><th>Property</th><th>Water</th><th>Air</th></tr>
+      <tr><td><var>ρ</var> (kg/m³)</td><td>987.28</td><td>0.95</td></tr>
+      <tr><td><var>c<sub>p</sub></var> (J/kg·K)</td><td>4.198 × 10³</td><td>1.009 × 10³</td></tr>
+    </table>
+    <div class="eq"><var>q<sub>a</sub></var> = <var>ṁ<sub>a</sub></var> <var>c<sub>p,a</sub></var>(<var>T<sub>i</sub></var> − <var>T<sub>o</sub></var>) = <strong>5.12 kW</strong> &nbsp;→&nbsp; solving, water outlet <var>t<sub>2</sub></var> = 53.5 °C</div>
+    <div class="eq"><var>C<sub>w</sub></var> = 1.13 × 10³ &nbsp;·&nbsp; <var>C<sub>a</sub></var> = 1.82 × 10² &nbsp;·&nbsp; <var>ε</var> = <strong>0.45</strong></div>
+    <div class="eq"><var>q</var> = <var>ε</var>(<var>ṁ</var><var>c<sub>p</sub></var>)<sub>min</sub>(<var>T<sub>i</sub></var> − <var>t<sub>i</sub></var>) = 5.12 kW ✓ &nbsp;·&nbsp; <var>ΔT<sub>lm</sub></var> = 43.89</div>
+    <div class="eq">NTU = 0.65 &nbsp;·&nbsp; <var>UA</var> = 120.27 W/°C &nbsp;·&nbsp; <var>A</var> = 1.58 m² &nbsp;·&nbsp; <var>U</var> = 76.12 W/m²·°C</div>
 
-    <h2>Current Development: E85 & Electronic Boost</h2>
-    <p>E85 knock resistance (105 RON) + latent heat (840 kJ/kg) provides 15–25 °C charge cooling from fuel evaporation alone. Electronic wastegate allows active boost management instead of fixed spring pressure.</p>
+    <h3 class="sec">Iteration 1 — Coupling the Loops</h3>
+    <p>The intercooler water outlet (≈53 °C) is the radiator water inlet — not the 110 °C first assumed. The gap is too large to ignore, so the radiator was recomputed on the real coupled temperature.</p>
+    <table>
+      <tr><th>Parameter</th><th>Iteration 1</th><th>Original</th></tr>
+      <tr><td><var>ṁ<sub>w</sub></var></td><td>0.263 kg/s</td><td>0.259 kg/s</td></tr>
+      <tr><td><var>ṁ<sub>a</sub></var></td><td>2.13 kg/s</td><td>2.13 kg/s</td></tr>
+      <tr><td><var>q<sub>w</sub></var></td><td>5.12 kW</td><td>66.51 kW</td></tr>
+      <tr><td><var>t<sub>o,a</sub></var></td><td>34.5 °C</td><td>63.25 °C</td></tr>
+      <tr><td><var>C<sub>w</sub></var></td><td>1.10 × 10³</td><td>1.09 × 10³</td></tr>
+      <tr><td><var>C<sub>a</sub></var></td><td>2.22 × 10³</td><td>2.14 × 10³</td></tr>
+      <tr><td><var>ε</var></td><td>0.22</td><td>0.79</td></tr>
+      <tr><td><var>ΔT<sub>lm</sub></var></td><td>17.81</td><td>29.17</td></tr>
+      <tr><td>NTU</td><td>0.26</td><td>2.25</td></tr>
+      <tr><td><var>UA</var></td><td>287.28 W/°C</td><td>2451.69 W/°C</td></tr>
+    </table>
+    <p>Lower coupled temperatures drop the heat transfer, the air outlet, and <var>UA</var>. The iterated <var>U</var> is far more realistic than the original on the same core area — Iteration 1 is taken as the theoretical result.</p>
 
-    <h2>Conclusion</h2>
-    <p>The air-water intercooler system met its design objective. Under back-to-back dynamometer testing, it delivered 10–16 °F cooler charge air than a comparable air-to-air installation. Steady-state thermal modeling confirms 1.12–1.14× net charge density gain despite 1.5 psi pressure loss. MAF-to-MAP conversion resolved metering failure. E85 + electronic boost transforms the system into an actively-managed, measured strategy.</p>
+    <h2>6. Results</h2>
+    <h3 class="sec">6.1 Dynamometer Testing</h3>
+    <p>On a chassis dyno, with the loop filled and circulating, the car held intercooler outlet temperatures <strong>10–19 °F above ambient</strong>. The same day, on the same dyno, a comparably sized air-to-air turbo car recorded <strong>20–35 °F above ambient</strong>. Under identical conditions the air-water system held charge temperature roughly <strong>10–16 °F closer to ambient</strong> — the core measured result. Caveat: dyno pulls are short and the loop was not thermally saturated, so these are transient figures, not soaked equilibrium.</p>
+    <h3 class="sec">6.2 Why the System Went Speed-Density</h3>
+    <p>The factory VR6 MAF housing is calibrated for a naturally aspirated 2.8 L peaking near 15–20 lb/min. The turbo configuration flows on the order of <strong>35–40 lb/min</strong> at redline at 18 psi, through a 4" inlet that drops velocity across the element below its calibrated range — outside its envelope in two directions at once. Converting to standalone speed-density (MAP) removed the MAF entirely; the ECU now computes airflow from manifold pressure, IAT, RPM, and a measured VE table, correcting the flat 85% VE assumption of §4.1.</p>
+    <h3 class="sec">6.3 Steady-State Operating Envelope</h3>
+    <p>The dyno reflects a cold loop; sustained operation heat-soaks toward an equilibrium set by the front exchanger. A coupled model was run at three points (compressor efficiency 0.72, core effectiveness 0.70, estimated <var>UA</var> = 800 W/K at 40 mph airflow, measured 0.26 kg/s pump flow, 1.5 psi charge-path loss, 18 psi gauge held at all elevations):</p>
+    <table>
+      <tr><th></th><th>Sea level, 90 °F</th><th>Sea level, 50 °F</th><th>Snoqualmie, 3,000 ft</th></tr>
+      <tr><td>Pressure ratio</td><td>2.22</td><td>2.22</td><td>2.37</td></tr>
+      <tr><td>Compressor discharge</td><td>286 °F</td><td>232 °F</td><td>282 °F</td></tr>
+      <tr><td>Mass flow at redline</td><td>36 lb/min</td><td>39 lb/min</td><td>35 lb/min</td></tr>
+      <tr><td>Intercooler heat load</td><td>17.4 kW</td><td>17.2 kW</td><td>17.9 kW</td></tr>
+      <tr><td>Water loop equilibrium</td><td>51→67 °C</td><td>28→44 °C</td><td>44→60 °C</td></tr>
+      <tr><td>Charge temp out</td><td>78 °C (173 °F)</td><td>53 °C (128 °F)</td><td>72 °C (162 °F)</td></tr>
+      <tr><td>Density gain vs. none</td><td>1.13×</td><td>1.12×</td><td>1.13×</td></tr>
+    </table>
+    <p>Fully soaked, the system holds charge air ~80 °F over ambient — not the 10–19 °F seen transiently on the dyno (soak time constant ≈ 1.7 min, ~95% of equilibrium after five minutes of continuous load). The <strong>binding condition is the hot sea-level day</strong>, not elevation: a wastegate spring holds gauge pressure, so PR rises with altitude, but cooler mountain air more than offsets the hotter discharge — the pass run exits the core cooler than the summer sea-level day. Net charge density gain of <strong>1.12–1.14×</strong> confirms temperature recovery outweighs the 1.5 psi loss; the short charge piping is a measurable asset.</p>
+    <h3 class="sec">6.4 Current Development — E85, Electronic Boost, EGT</h3>
+    <p>All prior track use ran pump gas with boost fixed by the wastegate spring. The current phase changes both: transitioning to E85 and wiring an electronic boost controller into the standalone, with a pre-turbine EGT sensor added during downpipe fabrication. E85 contributes on three axes — knock resistance that makes ~8.5:1 effective compression comfortable at 18 psi; higher latent heat plus ~40% greater fuel mass for an effective 15–25 °C of charge cooling (direct compensation for the soak condition); and cooler combustion, typically 100–200 °F lower sustained EGT. ECU-controlled boost turns those into a mapped quantity — target by gear, IAT, and water temperature — running full boost while the loop is cool and tapering as it soaks. The spring remains the mechanical floor and fail-safe. One constraint carries forward: E85's fuel-mass demand cuts effective injector headroom ~40%, so duty cycle is logged on the first E85 pulls before any boost increase.</p>
+
+    <h2>7. Conclusion</h2>
+    <p>The air-water intercooler met its design objective. Back-to-back against a comparable air-air installation, it delivered charge air 10–16 °F closer to ambient — confirming the premise that the far higher heat-transfer coefficient between water and aluminum is worth the complexity of a second loop. The later analysis sharpened rather than overturned that result: the dyno figures describe the transient regime, while at full soak the system holds ~80 °F over ambient — a timing cost on pump gas that becomes a manageable density trade on E85. The 1.12–1.14× net density gain confirms temperature recovery beats the pressure loss. The standalone speed-density conversion resolved the metering failure the airflow math had implicitly predicted, and replaced the flat VE assumption with a measured table. E85, ECU-controlled boost, and IAT/EGT instrumentation move the system from a fixed mechanical operating point to one that is measured, mapped, and managed across every condition modeled above.</p>
   </div>
 </div>
 
@@ -177,47 +278,6 @@
 
     <h2>Phase 9: Track Prep</h2>
     <div id="phase9" style="margin-bottom: 32px;"></div>
-  </div>
-</div>
-
-<div id="thesis" class="page">
-  <div class="container">
-    <div class="back-btn"><button id="btn-back-thesis">← Back to Hub</button></div>
-    <h1 style="font-size: 64px;">From Stock to Standalone</h1>
-    <p style="max-width: 750px; color: #8B8E96;">A 2.8L VR6 engine that started stock. No turbo. No intercooler. No standalone management. This is the engineering project that changed that — and the build that proved it works.</p>
-
-    <h2>The Project</h2>
-    <p>A college capstone design project. The requirement was simple: design something. The outcome was less simple.</p>
-    <p>Turbocharging a naturally aspirated engine requires charge cooling. The market had no air-to-water kit for this platform. So I designed one from first principles — compressor sizing, heat exchanger selection, thermal modeling, and validation through dynamometer testing.</p>
-    <p>The dyno proved what the equations predicted: 10–16 °F cooler charge air than an air-to-air system under identical conditions. Water-side heat transfer wins. The system works. It still works.</p>
-
-    <h2>The Problem</h2>
-    <p>The Unitronic Stage 3 ECU stopped reading the MAF sensor entirely. Not a calibration issue — the ECU couldn't detect the signal at all. Wiring was clean. Sensors tested fine. The ECU was fried or corrupted, and Unitronic refused to help.</p>
-    <p>On boost, the car would start strong but stumble hard once pressure built. No MAF reading meant no fuel correction. The map went full lean trying to manage boost on a naturally-aspirated tune. The car killed itself trying to breathe.</p>
-    <p>Hardware was fine. Software was the problem — and there was no way forward with a dead ECU and no support.</p>
-
-    <h2>The Solution</h2>
-    <p>Rewire everything from scratch. New harness, clean connections, every signal verified. Suddenly the ECU read the MAF. The car ran. Finally.</p>
-    <p>One rip from a stop sign. Full throttle. The BBM fuel rail brackets weren't rated for the inertia load. They bent, injectors unseated, raw fuel everywhere. Engine fire. April 2017.</p>
-    <p>Got the car out. Entire body harness torched — couldn't trust anything that survived the heat. New loom, new connectors, every wire from blank slate. That's when standalone became non-negotiable.</p>
-
-    <h2>Standalone: The Only Way Forward</h2>
-    <p>An Ecumaster EMU Black. Clean sheet, no legacy baggage. Speed-density tuning — manifold pressure and intake air temperature, volumetric efficiency table measured during real runs. No MAF dependency. No factory assumptions.</p>
-    <p>E85 fuel. 105 RON knock resistance, latent heat cooling the charge 15–25 °C from fuel evaporation alone. Electronic boost control mapped by gear, IAT, and coolant soak. Every system measured. Every parameter earned through testing.</p>
-    <p>Cryogenic gear treatment. Battery to the trunk. Dual fans wired to the standalone. Custom exhaust with EGT. In-car laptop for real-time tuning. Second fuse panel inside for gauges and data acquisition. Every system deliberate. Every wire a choice. Every pipe a calculation.</p>
-
-    <h2>The Engineering</h2>
-    <p>Precision 6262 turbocharger. 18 psi boost. Compressor operating point centered in the 75% efficiency island — safe surge margin, safe choke margin, right where the map wants to be.</p>
-    <p>Air-to-water intercooler custom-sized for 5.6 kg/s charge airflow. Heat exchanger UA = 120.27 W/K at the core, 800 W/K system-wide at 40 mph equivalent airflow. Core effectiveness 0.70, pressure loss 1.5 psi — short piping means temperature recovery outweighs pressure drop by a wide margin.</p>
-    <p>Steady-state thermal envelope locked by the hot sea-level day: 90 °F ambient, charge air soaks to 78 °C (172 °F) under sustained load. Net charge density gain 1.13× even accounting for pressure drop. That's the design working exactly as predicted.</p>
-    <p>Everything calculated. Everything validated. Everything measured.</p>
-
-    <h2>The Build</h2>
-    <p>The intake manifold was stock — split runners, unequal distribution. I chopped it. Custom cast elbow welded in with a Nubworks R32 throttle body flange. End-cap welded at an angle so all six cylinders see equal air. No more adapter plates. No more compromises.</p>
-    <p>The intercooler mounting went from a through-bolt through the plenum wall to a welded bung. Stronger. Cleaner. More reliable under boost cycling stress.</p>
-    <p>The wiring started as a converter harness bolted to factory loom. It's now a complete motorsport harness with Duestsch connectors, proper grounds, and power distribution that passes the megohm check.</p>
-    <p>Every system deliberate. Every wire a choice. Every pipe a calculation.</p>
-    <p>The goal now is simple: get it back on the road. Reliable miles first. Track miles later.</p>
   </div>
 </div>
 
@@ -273,11 +333,9 @@
   // Navigation
   document.getElementById('nav-story').addEventListener('click', function() { goToPage('story'); });
   document.getElementById('nav-tracker').addEventListener('click', function() { goToPage('tracker'); });
-  document.getElementById('nav-thesis').addEventListener('click', function() { goToPage('thesis'); });
   document.getElementById('nav-config').addEventListener('click', function() { goToPage('config'); });
   document.getElementById('btn-back-story').addEventListener('click', function() { goToPage('hub'); });
   document.getElementById('btn-back-tracker').addEventListener('click', function() { goToPage('hub'); });
-  document.getElementById('btn-back-thesis').addEventListener('click', function() { goToPage('hub'); });
   document.getElementById('btn-back-config').addEventListener('click', function() { goToPage('hub'); });
 
   function goToPage(page) {
