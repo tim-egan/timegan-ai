@@ -2,289 +2,347 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>JTI Tuning Cheat Sheet v2</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#16181d; --panel:#1e2128; --panel2:#23262e; --line:#31353f;
     --ink:#e8e6e0; --dim:#9a9789;
     --amber:#ffd965; --amber-deep:#bf9000; --cream:#fef2cb;
-    --pass:#6fdc8c; --fail:#ff4d3d;
-    --mono:'IBM Plex Mono',monospace; --disp:'Chakra Petch',sans-serif; --body:'IBM Plex Sans',sans-serif;
+    --green:#4a9e5f; --red:#c94436;
+    --green-bg:#1d3a28; --red-bg:#3f1f1b; --amber-bg:#3a3112;
+    --mono:'IBM Plex Mono',ui-monospace,monospace; --disp:'Chakra Petch',sans-serif; --body:'IBM Plex Sans',system-ui,sans-serif;
   }
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;padding:0 0 80px}
-  .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-text-size-adjust:100%}
+  html,body{max-width:100%;overflow-x:hidden}
+  body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.45;padding-bottom:48px}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 14px}
 
-  header{border-bottom:1px solid var(--line);padding:28px 0 20px;margin-bottom:28px}
-  .hd-top{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
-  h1{font-family:var(--disp);font-weight:700;font-size:30px;letter-spacing:.5px;text-transform:uppercase}
-  h1 .v{color:var(--amber);font-size:18px;vertical-align:super}
-  .tag{font-family:var(--mono);font-size:12px;color:var(--dim);letter-spacing:1.5px;text-transform:uppercase}
-  .keyrow{display:flex;gap:18px;margin-top:14px;flex-wrap:wrap;font-family:var(--mono);font-size:11.5px;color:var(--dim)}
-  .keyrow span{display:flex;align-items:center;gap:7px}
-  .sw{width:11px;height:11px;border-radius:2px;display:inline-block}
+  header{border-bottom:1px solid var(--line);padding:20px 0 14px;margin-bottom:18px}
+  h1{font-family:var(--disp);font-weight:700;font-size:24px;letter-spacing:.5px;text-transform:uppercase;line-height:1.1}
+  h1 .v{color:var(--amber);font-size:15px;vertical-align:super}
+  .tag{display:block;font-family:var(--mono);font-size:10.5px;color:var(--dim);letter-spacing:1.2px;text-transform:uppercase;margin-top:6px}
+  .keyrow{display:flex;gap:12px;margin-top:12px;flex-wrap:wrap;font-family:var(--mono);font-size:10.5px;color:var(--dim)}
+  .keyrow span{display:flex;align-items:center;gap:6px}
+  .sw{width:10px;height:10px;border-radius:2px;flex:none}
   .sw.a{background:var(--cream)} .sw.b{background:var(--amber)} .sw.c{background:var(--amber-deep)} .sw.d{background:#565b66}
+  .sw.g{background:var(--green)} .sw.y{background:var(--amber)} .sw.r{background:var(--red)}
 
-  .grid{display:grid;grid-template-columns:340px 1fr;gap:24px;align-items:start}
-  @media(max-width:900px){.grid{grid-template-columns:1fr}}
+  .grid{display:grid;grid-template-columns:320px minmax(0,1fr);gap:18px;align-items:start}
+  @media(max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}}
 
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:18px 18px 16px;margin-bottom:20px}
-  .card h2{font-family:var(--disp);font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:14px}
-  .row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:5px 0}
-  .row label{font-size:13.5px;color:var(--ink)}
-  .row small{display:block;color:var(--dim);font-size:11px;line-height:1.3}
-  input[type=number]{width:96px;background:var(--panel2);border:1px solid var(--line);border-left:3px solid var(--amber);
-    color:var(--ink);font-family:var(--mono);font-size:14px;padding:6px 8px;border-radius:4px;text-align:right}
-  input.freq{border-left-color:var(--cream)}
-  input.demo{border-left-color:var(--amber-deep)}
-  input:focus{outline:2px solid var(--amber);outline-offset:1px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px;margin-bottom:14px;min-width:0}
+  .card h2{font-family:var(--disp);font-size:11.5px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:var(--dim);margin-bottom:10px}
+  .row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:4px 0}
+  .row label{font-size:13px;min-width:0;flex:1}
+  .row small{display:block;color:var(--dim);font-size:10.5px;line-height:1.25}
+  .ctl{width:86px;flex:none;background:var(--panel2);border:1px solid var(--line);border-left:3px solid var(--amber);
+    color:var(--ink);font-family:var(--mono);font-size:16px;padding:7px 8px;border-radius:4px;text-align:right}
+  .ctl.freq{border-left-color:var(--cream)}
+  .ctl.demo{border-left-color:var(--amber-deep)}
+  .ctl:focus{outline:2px solid var(--amber);outline-offset:1px}
 
-  .readouts{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
-  .ro{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:12px 14px}
-  .ro .lbl{font-family:var(--mono);font-size:10.5px;letter-spacing:1.2px;text-transform:uppercase;color:var(--dim)}
-  .ro .val{font-family:var(--mono);font-size:22px;font-weight:600;margin-top:3px}
-  .ro .unit{font-size:12px;color:var(--dim);font-weight:400}
-  .ro.warn .val{color:var(--fail)} .ro.ok .val{color:var(--pass)}
+  .readouts{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:8px}
+  .ro{background:var(--panel2);border:1px solid var(--line);border-left:4px solid var(--line);border-radius:6px;padding:9px 11px;min-width:0}
+  .ro .lbl{font-family:var(--mono);font-size:9.5px;letter-spacing:.8px;text-transform:uppercase;color:var(--dim)}
+  .ro .val{font-family:var(--mono);font-size:19px;font-weight:600;margin-top:2px;white-space:nowrap}
+  .ro .unit{font-size:11px;color:var(--dim);font-weight:400}
+  .ro .sub{font-family:var(--mono);font-size:10px;color:var(--dim);margin-top:2px}
+  .ro.g{border-left-color:var(--green);background:linear-gradient(90deg,var(--green-bg),var(--panel2) 60%)} .ro.g .val{color:#7fd097}
+  .ro.y{border-left-color:var(--amber);background:linear-gradient(90deg,var(--amber-bg),var(--panel2) 60%)} .ro.y .val{color:var(--amber)}
+  .ro.r{border-left-color:var(--red);background:linear-gradient(90deg,var(--red-bg),var(--panel2) 60%)} .ro.r .val{color:#ff8d80}
 
-  .verdict{border-radius:8px;border:1px solid var(--line);padding:18px 20px;margin-bottom:20px;
-    display:flex;gap:20px;align-items:center;flex-wrap:wrap}
-  .verdict .big{font-family:var(--disp);font-size:26px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
-  .verdict.pass{border-color:var(--pass);box-shadow:inset 0 0 0 1px var(--pass), 0 0 24px rgba(111,220,140,.12)}
-  .verdict.pass .big{color:var(--pass)}
-  .verdict.fail{border-color:var(--fail);box-shadow:inset 0 0 0 1px var(--fail), 0 0 24px rgba(255,77,61,.12)}
-  .verdict.fail .big{color:var(--fail)}
-  .verdict .why{font-family:var(--mono);font-size:12.5px;color:var(--dim);flex:1;min-width:220px}
-  .pill{font-family:var(--mono);font-size:11px;padding:3px 9px;border-radius:99px;border:1px solid var(--line);color:var(--dim)}
-  .pill.ok{color:var(--pass);border-color:var(--pass)} .pill.no{color:var(--fail);border-color:var(--fail)}
+  .verdict{border-radius:8px;border:1px solid var(--line);padding:14px;margin-bottom:14px;display:flex;flex-direction:column;gap:10px}
+  .verdict .big{font-family:var(--disp);font-size:22px;font-weight:700;letter-spacing:1px;text-transform:uppercase;line-height:1.1}
+  .verdict.pass{border-color:var(--green);background:var(--green-bg)} .verdict.pass .big{color:#7fd097}
+  .verdict.fail{border-color:var(--red);background:var(--red-bg)} .verdict.fail .big{color:#ff8d80}
+  .verdict .why{font-family:var(--mono);font-size:11.5px;color:var(--dim);line-height:1.5}
+  .pills{display:flex;gap:6px;flex-wrap:wrap}
+  .pill{font-family:var(--mono);font-size:10px;padding:3px 8px;border-radius:99px;border:1px solid var(--line);color:var(--dim);white-space:nowrap}
+  .pill.g{color:#7fd097;border-color:var(--green)} .pill.y{color:var(--amber);border-color:var(--amber)} .pill.r{color:#ff8d80;border-color:var(--red)}
 
-  .tbl-card{overflow-x:auto}
-  table{border-collapse:collapse;font-family:var(--mono);font-size:12px;width:100%}
-  th,td{border:1px solid var(--line);padding:4px 6px;text-align:right;min-width:52px}
+  .tblwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+  table{border-collapse:collapse;font-family:var(--mono);font-size:11.5px}
+  th,td{border:1px solid var(--line);padding:3px 5px;text-align:right;white-space:nowrap}
   th{color:var(--dim);font-weight:500;background:var(--panel2)}
   th.axis{color:var(--amber);font-weight:600}
-  td input{width:100%;min-width:44px;background:transparent;border:none;border-left:none;color:var(--ink);
-    font-family:var(--mono);font-size:12px;text-align:right;padding:2px}
-  td input:focus{outline:1px solid var(--amber)}
-  td.hot{color:#111}
-  .note{font-size:12px;color:var(--dim);margin-top:10px;line-height:1.45}
+  th.corner{position:sticky;left:0;z-index:2}
+  td.stub,th.stub{position:sticky;left:0;z-index:1;background:var(--panel2);color:var(--amber);font-weight:600}
+  td.sc{min-width:46px;font-weight:500}
+  td.sc.over{box-shadow:inset 0 0 0 2px #ff3b25}
+  td .ce{width:42px;background:transparent;border:none;font-family:var(--mono);font-size:11.5px;
+    text-align:right;padding:1px 2px;color:inherit;-moz-appearance:textfield}
+  td .ce::-webkit-outer-spin-button,td .ce::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  td .ce:focus{outline:2px solid #111;outline-offset:-2px}
+  .legend{display:flex;gap:14px;margin-top:9px;font-family:var(--mono);font-size:10px;color:var(--dim);flex-wrap:wrap}
+  .legend span{display:flex;align-items:center;gap:5px}
+  .ramp{width:52px;height:9px;border-radius:2px;flex:none;
+    background:linear-gradient(90deg,#c94436,#e8b93c,#4a9e5f)}
+  .ramp.rev{background:linear-gradient(90deg,#4a9e5f,#e8b93c,#c94436)}
+  .note{font-size:11.5px;color:var(--dim);margin-top:8px;line-height:1.45}
   .note b{color:var(--amber)}
-  footer{margin-top:36px;font-family:var(--mono);font-size:11px;color:var(--dim);text-align:center}
-  @media(prefers-reduced-motion:no-preference){
-    .verdict{transition:box-shadow .3s,border-color .3s}
-    .ro .val{transition:color .2s}
+  .scroll-hint{display:none;font-family:var(--mono);font-size:9.5px;color:var(--dim);margin-bottom:6px;letter-spacing:.5px}
+  footer{margin-top:26px;font-family:var(--mono);font-size:10.5px;color:var(--dim);text-align:center}
+
+  @media(max-width:560px){
+    .wrap{padding:0 10px}
+    h1{font-size:20px}
+    .card{padding:11px;border-radius:6px}
+    .readouts{grid-template-columns:1fr 1fr;gap:6px}
+    .ro{padding:8px 9px} .ro .val{font-size:16px} .ro .lbl{font-size:9px}
+    .verdict .big{font-size:19px}
+    table{font-size:10.5px} th,td{padding:2px 3px}
+    td.sc{min-width:38px} td .ce{width:34px;font-size:10.5px}
+    .scroll-hint{display:block}
+    .ctl{width:78px;font-size:16px}
   }
 </style>
 </head>
 <body>
 <header><div class="wrap">
-  <div class="hd-top">
-    <h1>Tuning Cheat Sheet <span class="v">v2</span></h1>
-    <span class="tag">MK4 GTI VR6 · PT6262 · AWIC · Speed-Density · E85</span>
-  </div>
+  <h1>Tuning Cheat Sheet <span class="v">v2</span></h1>
+  <span class="tag">MK4 GTI VR6 · PT6262 · AWIC · Speed-Density · E85</span>
   <div class="keyrow">
-    <span><i class="sw a"></i>Inputs — fuck with this</span>
-    <span><i class="sw b"></i>Inputs — probably only set once</span>
-    <span><i class="sw c"></i>Inputs — only here to demo the tables</span>
-    <span><i class="sw d"></i>Calculated — don't fuck with this</span>
+    <span><i class="sw a"></i>fuck with this</span>
+    <span><i class="sw b"></i>set once</span>
+    <span><i class="sw c"></i>demo only</span>
+    <span><i class="sw d"></i>don't fuck with this</span>
   </div>
 </div></header>
 
 <div class="wrap">
 <div class="grid">
 
-  <!-- LEFT: INPUTS -->
-  <div>
-    <div class="card"><h2>Engine</h2>
-      <div class="row"><label>Target HP</label><input class="freq" type="number" id="hp" value="450"></div>
-      <div class="row"><label>Peak boost <small>kPa gauge</small></label><input class="freq" type="number" id="boost" value="124"></div>
-      <div class="row"><label>Displacement <small>L</small></label><input type="number" id="disp" value="2.8" step="0.1"></div>
-      <div class="row"><label>Cylinders</label><input type="number" id="cyl" value="6"></div>
-      <div class="row"><label>Max RPM</label><input type="number" id="rpm" value="7200" step="100"></div>
-    </div>
-
-    <div class="card"><h2>Spec'd Parts</h2>
-      <div class="row"><label>Injectors <small>cc/min rated</small></label><input class="freq" type="number" id="inj" value="630"></div>
-      <div class="row"><label>Injector rating pressure <small>bar</small></label><input type="number" id="injp" value="3" step="0.5"></div>
-      <div class="row"><label>Base fuel pressure <small>bar — 4bar FPR on car</small></label><input type="number" id="basep" value="4" step="0.5"></div>
-      <div class="row"><label>Injector dead time <small>ms @ 13.8V</small></label><input type="number" id="dead" value="1.0" step="0.1"></div>
-      <div class="row"><label>Fuel pump <small>LPH rated</small></label><input class="freq" type="number" id="pump" value="240"></div>
-      <div class="row"><label>Pump derate @ boost rail <small>%</small></label><input type="number" id="derate" value="25"></div>
-    </div>
-
-    <div class="card"><h2>Fueling</h2>
-      <div class="row"><label>Ethanol content <small>% — drives density &amp; stoich</small></label><input class="freq" type="number" id="eth" value="85"></div>
-      <div class="row"><label>Full-power lambda</label><input class="freq" type="number" id="lambda" value="0.80" step="0.01"></div>
-      <div class="row"><label>BSFC <small>lb/hp·hr — FI E85 ≈ 0.84–1.05</small></label><input class="freq" type="number" id="bsfc" value="0.80" step="0.05"></div>
-      <div class="row"><label>Max injector duty <small>%</small></label><input type="number" id="idc" value="80"></div>
-    </div>
-
-    <div class="card"><h2>Conditions</h2>
-      <div class="row"><label>Ambient air <small>°C</small></label><input class="demo" type="number" id="tamb" value="15"></div>
-      <div class="row"><label>Ambient pressure <small>kPa</small></label><input class="demo" type="number" id="pamb" value="101.3" step="0.1"></div>
-      <div class="row"><label>Charge air temp <small>°C post-intercooler</small></label><input class="freq" type="number" id="tchg" value="60"></div>
-    </div>
-  </div>
-
-  <!-- RIGHT: RESULTS -->
   <div>
     <div class="verdict" id="verdict">
       <div class="big" id="vtext">—</div>
       <div class="why" id="vwhy"></div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <div class="pills">
         <span class="pill" id="pill-inj">injectors</span>
         <span class="pill" id="pill-pump">pump</span>
         <span class="pill" id="pill-conv">convergence</span>
       </div>
     </div>
 
-    <div class="card"><h2>From Airflow &nbsp;·&nbsp; what the engine demands</h2>
-      <div class="readouts">
-        <div class="ro"><div class="lbl">Max fuel flow</div><div class="val" id="r-lph">—<span class="unit"> LPH</span></div></div>
-        <div class="ro"><div class="lbl">Per-cyl fuel</div><div class="val" id="r-percyl">—<span class="unit"> cc/min</span></div></div>
-        <div class="ro"><div class="lbl">Injector needed @ IDC</div><div class="val" id="r-need">—<span class="unit"> cc/min</span></div></div>
-        <div class="ro"><div class="lbl">Estimated HP from BSFC</div><div class="val" id="r-esthp">—</div></div>
-      </div>
+    <div class="card"><h2>Engine</h2>
+      <div class="row"><label>Target HP</label><input class="ctl freq" type="number" id="hp" value="450"></div>
+      <div class="row"><label>Peak boost <small>kPa gauge</small></label><input class="ctl freq" type="number" id="boost" value="124"></div>
+      <div class="row"><label>Displacement <small>L</small></label><input class="ctl" type="number" id="disp" value="2.8" step="0.1"></div>
+      <div class="row"><label>Cylinders</label><input class="ctl" type="number" id="cyl" value="6"></div>
+      <div class="row"><label>Max RPM</label><input class="ctl" type="number" id="rpm" value="7200" step="100"></div>
     </div>
 
-    <div class="card"><h2>From Target HP &nbsp;·&nbsp; what the goal requires</h2>
-      <div class="readouts">
-        <div class="ro"><div class="lbl">Pump needed</div><div class="val" id="r-pumpneed">—<span class="unit"> LPH</span></div></div>
-        <div class="ro"><div class="lbl">Injector needed</div><div class="val" id="r-injneed">—<span class="unit"> cc/min</span></div></div>
-        <div class="ro"><div class="lbl">Target AFR</div><div class="val" id="r-afr">—</div></div>
-        <div class="ro"><div class="lbl">Stoich · density</div><div class="val" id="r-fuel" style="font-size:16px">—</div></div>
-      </div>
+    <div class="card"><h2>Spec'd Parts</h2>
+      <div class="row"><label>Injectors <small>cc/min rated</small></label><input class="ctl freq" type="number" id="inj" value="630"></div>
+      <div class="row"><label>Rating pressure <small>bar</small></label><input class="ctl" type="number" id="injp" value="3" step="0.5"></div>
+      <div class="row"><label>Base fuel pressure <small>bar — 4bar FPR on car</small></label><input class="ctl" type="number" id="basep" value="4" step="0.5"></div>
+      <div class="row"><label>Dead time <small>ms @ 13.8V</small></label><input class="ctl" type="number" id="dead" value="1.0" step="0.1"></div>
+      <div class="row"><label>Fuel pump <small>LPH rated</small></label><input class="ctl freq" type="number" id="pump" value="240"></div>
+      <div class="row"><label>Pump derate @ boost <small>%</small></label><input class="ctl" type="number" id="derate" value="25"></div>
     </div>
 
-    <div class="card"><h2>Hardware, corrected</h2>
+    <div class="card"><h2>Fueling</h2>
+      <div class="row"><label>Ethanol <small>% — drives density &amp; stoich</small></label><input class="ctl freq" type="number" id="eth" value="85"></div>
+      <div class="row"><label>Full-power lambda</label><input class="ctl freq" type="number" id="lambda" value="0.80" step="0.01"></div>
+      <div class="row"><label>BSFC <small>FI E85 ≈ 0.84–1.05</small></label><input class="ctl freq" type="number" id="bsfc" value="0.80" step="0.05"></div>
+      <div class="row"><label>Max injector duty <small>%</small></label><input class="ctl" type="number" id="idc" value="80"></div>
+    </div>
+
+    <div class="card"><h2>Conditions</h2>
+      <div class="row"><label>Ambient air <small>°C</small></label><input class="ctl demo" type="number" id="tamb" value="15"></div>
+      <div class="row"><label>Ambient pressure <small>kPa</small></label><input class="ctl demo" type="number" id="pamb" value="101.3" step="0.1"></div>
+      <div class="row"><label>Charge air temp <small>°C post-intercooler</small></label><input class="ctl freq" type="number" id="tchg" value="60"></div>
+    </div>
+  </div>
+
+  <div>
+    <div class="card"><h2>Hardware vs demand</h2>
       <div class="readouts">
-        <div class="ro"><div class="lbl">Effective injector flow</div><div class="val" id="r-effinj">—<span class="unit"> cc/min</span></div></div>
-        <div class="ro"><div class="lbl">Effective pump flow</div><div class="val" id="r-effpump">—<span class="unit"> LPH</span></div></div>
-        <div class="ro"><div class="lbl">Summary duty</div><div class="val" id="r-duty">—<span class="unit"> %</span></div></div>
-        <div class="ro"><div class="lbl">Peak IDC, worst PW cell</div><div class="val" id="r-peakidc">—<span class="unit"> %</span></div></div>
+        <div class="ro" id="ro-inj"><div class="lbl">Injectors eff / need</div><div class="val"><span id="v-effinj">—</span><span class="unit"> / </span><span id="v-injreq">—</span></div><div class="sub" id="s-inj"></div></div>
+        <div class="ro" id="ro-pump"><div class="lbl">Pump eff / need</div><div class="val"><span id="v-effpump">—</span><span class="unit"> / </span><span id="v-pumpreq">—</span></div><div class="sub" id="s-pump"></div></div>
+        <div class="ro" id="ro-duty"><div class="lbl">Summary duty</div><div class="val"><span id="v-duty">—</span><span class="unit"> %</span></div><div class="sub">vs <span id="s-cap1"></span>% cap</div></div>
+        <div class="ro" id="ro-peak"><div class="lbl">Peak IDC · worst cell</div><div class="val"><span id="v-peak">—</span><span class="unit"> %</span></div><div class="sub">vs <span id="s-cap2"></span>% cap</div></div>
+      </div>
+      <div class="legend"><span><i class="sw g"></i>≥10% margin</span><span><i class="sw y"></i>0–10%</span><span><i class="sw r"></i>short / over cap</span></div>
+    </div>
+
+    <div class="card"><h2>From Airflow · what the engine demands</h2>
+      <div class="readouts">
+        <div class="ro"><div class="lbl">Max fuel flow</div><div class="val"><span id="v-lph">—</span><span class="unit"> LPH</span></div></div>
+        <div class="ro"><div class="lbl">Per-cyl fuel</div><div class="val"><span id="v-percyl">—</span><span class="unit"> cc/min</span></div></div>
+        <div class="ro"><div class="lbl">Est. HP from BSFC</div><div class="val"><span id="v-esthp">—</span></div></div>
+        <div class="ro"><div class="lbl">Stoich·density·AFR</div><div class="val" style="font-size:13px"><span id="v-fuel">—</span></div></div>
       </div>
       <p class="note" id="convnote"></p>
     </div>
 
-    <div class="card tbl-card"><h2>VE table — editable (load % × RPM)</h2>
-      <table id="vetbl"></table>
-      <p class="note">Type over any cell. Max VE for the airflow method reads the whole table.</p>
+    <div class="card"><h2>VE table — editable</h2>
+      <div class="scroll-hint">◂ swipe table ▸</div>
+      <div class="tblwrap"><table id="vetbl"></table></div>
+      <div class="legend"><span><i class="ramp"></i>low VE → high VE</span><span>scale spans this table's own range</span></div>
     </div>
 
-    <div class="card tbl-card"><h2>Boost target multiplier — editable (fraction of peak boost)</h2>
-      <table id="bmtbl"></table>
+    <div class="card"><h2>Boost target multiplier — editable</h2>
+      <div class="scroll-hint">◂ swipe table ▸</div>
+      <div class="tblwrap"><table id="bmtbl"></table></div>
+      <div class="legend"><span><i class="ramp"></i>no boost → full boost</span></div>
     </div>
 
-    <div class="card tbl-card"><h2>Injector pulse width (ms) — ideal gas law, incl. dead time</h2>
-      <table id="pwtbl"></table>
-      <p class="note">Cells over your max duty glow <b>hot</b>. Cylinder air mass uses charge air temp, absolute manifold pressure = ambient + boost × multiplier.</p>
+    <div class="card"><h2>Injector pulse width (ms)</h2>
+      <div class="scroll-hint">◂ swipe table ▸</div>
+      <div class="tblwrap"><table id="pwtbl"></table></div>
+      <div class="legend"><span><i class="ramp rev"></i>duty: headroom → at cap</span><span><i class="sw r"></i>outlined = over cap</span></div>
+      <p class="note">Colour tracks each cell's real duty against your <b id="n-cap"></b>% ceiling. Air mass uses charge temp; manifold pressure = ambient + boost × multiplier.</p>
     </div>
   </div>
 </div>
-
 <footer>JTI · fueling math only — the dyno has the final word</footer>
 </div>
 
 <script>
-const RPMS=[500,1000,2000,3000,4000,5000,6000,7000];
-const LOADS=[100,90,80,70,60,50,40,30,20,10,0];
-let VE=[[70,75,80,80,85,90,90,90],[70,75,80,80,85,90,90,90],[70,70,80,80,85,85,90,85],
+(function(){
+"use strict";
+var RPMS=[500,1000,2000,3000,4000,5000,6000,7000];
+var LOADS=[100,90,80,70,60,50,40,30,20,10,0];
+var VE=[[70,75,80,80,85,90,90,90],[70,75,80,80,85,90,90,90],[70,70,80,80,85,85,90,85],
 [70,70,75,80,80,85,85,85],[65,70,75,80,80,85,85,85],[65,70,70,75,80,85,85,85],
 [65,70,70,75,80,80,85,80],[65,65,70,75,75,80,80,80],[60,60,65,70,75,80,80,80],
 [55,55,60,70,75,75,80,75],[50,50,60,70,75,75,75,75]];
-let BM=[[0,0,.6,.8,1,1,1,1],[0,0,.5,.8,.9,.9,.9,.9],[0,0,.5,.7,.8,.8,.8,.8],
+var BM=[[0,0,.6,.8,1,1,1,1],[0,0,.5,.8,.9,.9,.9,.9],[0,0,.5,.7,.8,.8,.8,.8],
 [0,0,.5,.6,.7,.7,.7,.7],[0,0,.5,.5,.6,.6,.6,.6],[0,0,.4,.4,.5,.5,.5,.5],
 [0,0,.3,.3,.4,.4,.4,.4],[0,0,.2,.2,.3,.3,.3,.3],[0,0,.1,.2,.2,.2,.2,.2],
 [0,0,0,.1,.1,.1,.1,.1],[0,0,0,0,0,0,0,0]];
 
-const $=id=>document.getElementById(id);
-const num=id=>parseFloat($(id).value)||0;
+function $(id){return document.getElementById(id);}
+function num(id){var v=parseFloat($(id).value);return isFinite(v)?v:0;}
+function txt(id,v){$(id).textContent=v;}
+function fmt(v,d){return isFinite(v)?v.toFixed(d===undefined?1:d):"—";}
 
-function buildEditable(tbl,data,step,oninput){
-  let h='<tr><th class="axis">Load\\RPM</th>'+RPMS.map(r=>`<th class="axis">${r}</th>`).join('')+'</tr>';
-  data.forEach((row,i)=>{h+=`<tr><th class="axis">${LOADS[i]}</th>`+
-    row.map((v,j)=>`<td><input type="number" step="${step}" value="${v}" data-i="${i}" data-j="${j}"></td>`).join('')+'</tr>';});
-  tbl.innerHTML=h;
-  tbl.querySelectorAll('input').forEach(inp=>inp.addEventListener('input',e=>{
-    data[+e.target.dataset.i][+e.target.dataset.j]=parseFloat(e.target.value)||0;oninput();}));
+/* Excel-style 3-colour scale: 0 = red, 0.5 = amber, 1 = green */
+function scaleRGB(t){
+  t=isFinite(t)?Math.max(0,Math.min(1,t)):0;
+  var a,b,f;
+  if(t<0.5){a=[201,68,54];b=[232,185,60];f=t/0.5;}
+  else{a=[232,185,60];b=[74,158,95];f=(t-0.5)/0.5;}
+  return [Math.round(a[0]+(b[0]-a[0])*f),Math.round(a[1]+(b[1]-a[1])*f),Math.round(a[2]+(b[2]-a[2])*f)];
+}
+function css(c){return "rgb("+c[0]+","+c[1]+","+c[2]+")";}
+function ink(c){return (0.299*c[0]+0.587*c[1]+0.114*c[2])/255>0.55?"#14161a":"#f4f2ec";}
+function norm(v,mn,mx){return mx===mn?0.5:(v-mn)/(mx-mn);}
+function rag(have,need){var m=(have-need)/need;return m>=0.10?"g":(m>=0?"y":"r");}
+function ragCap(v,cap){var f=v/cap;return f<0.85?"g":(f<=1?"y":"r");}
+function extent(d){var mn=Infinity,mx=-Infinity;for(var i=0;i<d.length;i++)for(var j=0;j<d[i].length;j++){
+  if(d[i][j]<mn)mn=d[i][j];if(d[i][j]>mx)mx=d[i][j];}return [mn,mx];}
+
+function header(){
+  var h='<tr><th class="axis corner">Load\\RPM</th>';
+  for(var j=0;j<RPMS.length;j++)h+='<th class="axis">'+RPMS[j]+'</th>';
+  return h+'</tr>';
 }
 
-function heat(v,min,max){ // charcoal-blue -> amber ramp
-  const t=Math.max(0,Math.min(1,(v-min)/(max-min||1)));
-  const r=Math.round(35+t*220),g=Math.round(50+t*167),b=Math.round(75+t*26);
-  return `rgb(${r},${g},${b})`;
+/* editable grid, coloured by its own min–max */
+function paintEditable(tbl,data,step,dec){
+  var e=extent(data),h=header();
+  for(var i=0;i<data.length;i++){
+    h+='<tr><th class="axis stub">'+LOADS[i]+'</th>';
+    for(var j=0;j<data[i].length;j++){
+      var c=scaleRGB(norm(data[i][j],e[0],e[1]));
+      h+='<td class="sc" style="background:'+css(c)+';color:'+ink(c)+'">'+
+         '<input class="ce" type="number" step="'+step+'" value="'+data[i][j].toFixed(dec)+'" data-i="'+i+'" data-j="'+j+'"></td>';
+    }
+    h+='</tr>';
+  }
+  tbl.innerHTML=h;
+  var ins=tbl.querySelectorAll("input.ce");
+  for(var k=0;k<ins.length;k++)ins[k].addEventListener("input",function(e2){
+    var v=parseFloat(e2.target.value);
+    data[+e2.target.getAttribute("data-i")][+e2.target.getAttribute("data-j")]=isFinite(v)?v:0;
+    calc();
+  });
 }
 
 function calc(){
-  const eth=num('eth')/100;
-  const rho=(1-eth)*0.74+eth*0.789;                     // fuel density kg/L
-  const stoich=((1-eth)*0.74*14.7+eth*0.789*9)/rho;
-  const afr=num('lambda')*stoich;
-  const Vcyl=num('disp')/num('cyl');                    // L
-  const veMax=Math.max(...VE.flat())/100;
-  const airflowNA=num('disp')*num('rpm')*veMax/2;       // L/min
-  const boosted=airflowNA*(1+num('boost')/101.3)/1000;  // m3/min
-  const rhoAir=num('pamb')*1000/(286.9*(num('tchg')+273.15));
-  const fuelKgMin=boosted*rhoAir/afr;
-  const lph=fuelKgMin/rho*60;
-  const perCyl=fuelKgMin/rho*1000/num('cyl');
-  const needIDC=perCyl/(num('idc')/100);
-  const estHP=lph*rho*2.2/num('bsfc');
-  const pumpNeed=(num('hp')*num('bsfc')/2.2)/rho;       // LPH
-  const injNeed=pumpNeed/60*1000/num('cyl')/(num('idc')/100);
-  const effInj=num('inj')*Math.sqrt(num('basep')/num('injp'));
-  const effPump=num('pump')*(1-num('derate')/100);
-  const duty=100*perCyl/effInj;
+  var eth=num("eth")/100;
+  var rho=(1-eth)*0.74+eth*0.789;
+  var stoich=((1-eth)*0.74*14.7+eth*0.789*9)/rho;
+  var afr=num("lambda")*stoich;
+  var Vcyl=num("disp")/num("cyl");
+  var veMax=extent(VE)[1]/100;
+  var cap=num("idc");
+  var Tchg=num("tchg")+273.15;
+  var airflowNA=num("disp")*num("rpm")*veMax/2;
+  var boosted=airflowNA*(1+num("boost")/101.3)/1000;
+  var rhoAir=num("pamb")*1000/(286.9*Tchg);
+  var fuelKgMin=boosted*rhoAir/afr;
+  var lph=fuelKgMin/rho*60;
+  var perCyl=fuelKgMin/rho*1000/num("cyl");
+  var needIDC=perCyl/(cap/100);
+  var estHP=lph*rho*2.2/num("bsfc");
+  var pumpNeed=(num("hp")*num("bsfc")/2.2)/rho;
+  var injNeed=pumpNeed/60*1000/num("cyl")/(cap/100);
+  var effInj=num("inj")*Math.sqrt(num("basep")/num("injp"));
+  var effPump=num("pump")*(1-num("derate")/100);
+  var duty=100*perCyl/effInj;
 
-  // PW table
-  let peakIDC=0;
-  let h='<tr><th class="axis">Load\\RPM</th>'+RPMS.map(r=>`<th class="axis">${r}</th>`).join('')+'</tr>';
-  const pw=LOADS.map((L,i)=>RPMS.map((R,j)=>{
-    const Pman=num('pamb')*1000+BM[i][j]*num('boost')*1000;
-    const mAir=(VE[i][j]/100)*Pman*(Vcyl/1000)/(286.9*(num('tchg')+273.15))*1000; // g
-    const cc=mAir/afr/rho;
-    const ms=cc/(effInj/60000)+num('dead');
-    peakIDC=Math.max(peakIDC,100*ms*R/120000);
-    return ms;
-  }));
-  const flat=pw.flat(),mn=Math.min(...flat),mx=Math.max(...flat);
-  pw.forEach((row,i)=>{h+=`<tr><th class="axis">${LOADS[i]}</th>`+row.map((v,j)=>{
-    const over=100*v*RPMS[j]/120000>num('idc');
-    return `<td class="hot" style="background:${over?'var(--fail)':heat(v,mn,mx)}">${v.toFixed(1)}</td>`;
-  }).join('')+'</tr>';});
-  $('pwtbl').innerHTML=h;
+  /* PW table — colour by duty against cap, reversed ramp (headroom = green) */
+  var peakIDC=0,h=header();
+  for(var r=0;r<LOADS.length;r++){
+    h+='<tr><th class="axis stub">'+LOADS[r]+'</th>';
+    for(var c=0;c<RPMS.length;c++){
+      var Pman=num("pamb")*1000+BM[r][c]*num("boost")*1000;
+      var mAir=(VE[r][c]/100)*Pman*(Vcyl/1000)/(286.9*Tchg)*1000;
+      var ms=(mAir/afr/rho)/(effInj/60000)+num("dead");
+      var d=100*ms*RPMS[c]/120000;
+      if(d>peakIDC)peakIDC=d;
+      var col=scaleRGB(1-Math.min(1,d/cap));
+      h+='<td class="sc'+(d>cap?" over":"")+'" style="background:'+css(col)+';color:'+ink(col)+
+         '" title="duty '+d.toFixed(1)+'%">'+ms.toFixed(1)+'</td>';
+    }
+    h+='</tr>';
+  }
+  $("pwtbl").innerHTML=h;
 
-  // readouts
-  const set=(id,v,d=1)=>{const el=$(id);el.childNodes[0].nodeValue=isFinite(v)?v.toFixed(d):'—';};
-  set('r-lph',lph);set('r-percyl',perCyl,0);set('r-need',needIDC,0);set('r-esthp',estHP,0);
-  set('r-pumpneed',pumpNeed);set('r-injneed',injNeed,0);set('r-afr',afr,2);
-  $('r-fuel').textContent=stoich.toFixed(2)+' · '+rho.toFixed(3);
-  set('r-effinj',effInj,0);set('r-effpump',effPump,0);set('r-duty',duty);set('r-peakidc',peakIDC);
-  $('r-duty').parentElement.className='ro '+(duty<=num('idc')?'ok':'warn');
-  $('r-peakidc').parentElement.className='ro '+(peakIDC<=num('idc')?'ok':'warn');
+  var injReq=Math.max(needIDC,injNeed),pumpReq=Math.max(lph,pumpNeed);
+  txt("v-effinj",fmt(effInj,0));txt("v-injreq",fmt(injReq,0));
+  txt("v-effpump",fmt(effPump,0));txt("v-pumpreq",fmt(pumpReq,0));
+  txt("v-duty",fmt(duty));txt("v-peak",fmt(peakIDC));
+  txt("s-cap1",cap);txt("s-cap2",cap);txt("n-cap",cap);
+  txt("v-lph",fmt(lph));txt("v-percyl",fmt(perCyl,0));txt("v-esthp",fmt(estHP,0));
+  txt("v-fuel",stoich.toFixed(2)+" · "+rho.toFixed(3)+" · "+afr.toFixed(2));
+  var ri=rag(effInj,injReq),rp=rag(effPump,pumpReq);
+  $("ro-inj").className="ro "+ri;$("ro-pump").className="ro "+rp;
+  $("ro-duty").className="ro "+ragCap(duty,cap);$("ro-peak").className="ro "+ragCap(peakIDC,cap);
+  txt("s-inj",ri==="r"?"short "+fmt(injReq-effInj,0)+" cc/min":"+"+fmt(effInj-injReq,0)+" cc/min");
+  txt("s-pump",rp==="r"?"short "+fmt(pumpReq-effPump,0)+" LPH":"+"+fmt(effPump-pumpReq,0)+" LPH");
 
-  // flags — same logic as the sheet
-  const injOK=effInj>needIDC&&effInj>injNeed&&peakIDC<=num('idc');
-  const pumpOK=effPump>lph&&effPump>pumpNeed;
-  const convErr=(pumpNeed-lph)/pumpNeed;
-  const conv=Math.abs(convErr)<0.1?'Close enough':(convErr<0?'Raise BSFC or Lambda or Lower VE':'Lower BSFC or Lambda or Raise VE');
-  const verdict=injOK&&pumpOK?'Fuck yea!':injOK&&!pumpOK?'Needs more fuel pump':!injOK&&pumpOK?'Needs bigger injectors':'Bruh… no';
-  const v=$('verdict');v.className='verdict '+(injOK&&pumpOK?'pass':'fail');
-  $('vtext').textContent=verdict;
-  $('vwhy').textContent=`inj ${effInj.toFixed(0)}cc vs ${Math.max(needIDC,injNeed).toFixed(0)} needed, peak IDC ${peakIDC.toFixed(1)}% vs ${num('idc')}% cap · pump ${effPump.toFixed(0)} LPH vs ${Math.max(lph,pumpNeed).toFixed(0)} needed`;
-  $('pill-inj').className='pill '+(injOK?'ok':'no');
-  $('pill-pump').className='pill '+(pumpOK?'ok':'no');
-  $('pill-conv').className='pill '+(Math.abs(convErr)<0.1?'ok':'no');
-  $('pill-conv').textContent='convergence: '+conv.toLowerCase();
-  $('convnote').innerHTML=`Airflow method says <b>${lph.toFixed(1)} LPH</b>; HP method says <b>${pumpNeed.toFixed(1)} LPH</b>. ${conv==='Close enough'?'The two agree — your VE, lambda, and BSFC are telling a consistent story.':'<b>'+conv+'</b> until they agree within 10%.'}`;
+  var injOK=effInj>needIDC&&effInj>injNeed&&peakIDC<=cap;
+  var pumpOK=effPump>lph&&effPump>pumpNeed;
+  var convErr=(pumpNeed-lph)/pumpNeed,convOK=Math.abs(convErr)<0.1;
+  var conv=convOK?"Close enough":(convErr<0?"Raise BSFC or Lambda or Lower VE":"Lower BSFC or Lambda or Raise VE");
+  var verdict=injOK&&pumpOK?"Fuck yea!":injOK&&!pumpOK?"Needs more fuel pump":!injOK&&pumpOK?"Needs bigger injectors":"Bruh… no";
+  $("verdict").className="verdict "+(injOK&&pumpOK?"pass":"fail");
+  txt("vtext",verdict);
+  txt("vwhy","inj "+fmt(effInj,0)+" vs "+fmt(injReq,0)+" cc/min · peak IDC "+fmt(peakIDC)+"% vs "+cap+"% · pump "+fmt(effPump,0)+" vs "+fmt(pumpReq,0)+" LPH");
+  $("pill-inj").className="pill "+(injOK?"g":"r");
+  $("pill-pump").className="pill "+(pumpOK?"g":"r");
+  $("pill-conv").className="pill "+(convOK?"g":"y");
+  txt("pill-conv","convergence: "+conv.toLowerCase());
+  $("convnote").innerHTML="Airflow says <b>"+fmt(lph)+" LPH</b>; HP says <b>"+fmt(pumpNeed)+" LPH</b>. "+
+    (convOK?"The two agree — VE, lambda and BSFC are telling a consistent story.":"<b>"+conv+"</b> until they agree within 10%.");
 }
+window.calc=calc;
 
-buildEditable($('vetbl'),VE,5,calc);
-buildEditable($('bmtbl'),BM,0.1,calc);
-document.querySelectorAll('input[type=number]:not(td input)').forEach(i=>i.addEventListener('input',calc));
+function repaint(){paintEditable($("vetbl"),VE,5,0);paintEditable($("bmtbl"),BM,0.1,1);calc();}
+paintEditable($("vetbl"),VE,5,0);
+paintEditable($("bmtbl"),BM,0.1,1);
+var ctls=document.querySelectorAll("input.ctl");
+for(var i=0;i<ctls.length;i++)ctls[i].addEventListener("input",calc);
+/* recolour editable grids on blur so the scale follows edits without stealing focus */
+document.addEventListener("focusout",function(e){if(e.target.classList&&e.target.classList.contains("ce"))repaint();});
 calc();
+})();
 </script>
 </body>
 </html>
