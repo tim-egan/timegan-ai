@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes">
+<title>AZ5 — Site-Wide Electrical One-Line (Consolidated, Flagged) — Rev 0, 60% DD</title>
+<style>
+  :root{
+    --bg:#1e293b; --panel:#26344a; --line:#3c4d6a; --text:#eef2f8; --muted:#aab8cc;
+    --red:#ef4444; --blue:#3b82f6; --orange:#f97316; --green:#22c55e; --purple:#a855f7; --amber:#f59e0b; --pink:#ec4899;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',Helvetica,Arial,sans-serif;}
+  header{
+    padding:14px 20px;border-bottom:1px solid var(--line);
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+    background:linear-gradient(180deg,#2c3c56,#1e293b);position:sticky;top:0;z-index:20;
+  }
+  header h1{font-size:16px;margin:0;font-weight:600;}
+  header .sub{color:var(--muted);font-size:12px;margin-top:2px;}
+  .badges{display:flex;gap:8px;flex-wrap:wrap;}
+  .badge{font-size:11px;padding:3px 8px;border-radius:20px;border:1px solid var(--line);color:var(--muted);}
+  .badge-rev{background:#1e293b;color:#93c5fd;border-color:#1e3a5f;}
+  .badge-status{background:#3b1f1f;color:#fca5a5;border-color:#5f2626;}
+  .badge-flag{background:#4a3a06;color:#fde68a;border-color:#7a5e0d;}
+  .tabbar{display:flex;gap:6px;padding:8px 20px;border-bottom:1px solid var(--line);background:#243349;position:sticky;top:64px;z-index:19;flex-wrap:wrap;}
+  .tab{background:#182545;border:1px solid var(--line);color:var(--muted);padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px;}
+  .tab.active{background:#26406e;color:#fff;border-color:#3b5998;}
+  .flagbanner{
+    margin:12px 20px 0 20px;background:#2a2205;border:1px solid #7a5e0d;border-radius:8px;
+    padding:14px 18px;font-size:12.5px;color:#fde68a;
+  }
+  .flagbanner h3{
+    margin:0;font-size:13.5px;color:#fbbf24;cursor:pointer;
+    display:flex;align-items:center;justify-content:space-between;gap:10px;user-select:none;
+  }
+  .flagbanner h3 .flagcount{font-size:11px;font-weight:600;color:#fde68a;background:#4a3a06;
+    border:1px solid #7a5e0d;border-radius:20px;padding:2px 9px;margin-left:auto;}
+  .flagbanner h3 .chevron{transition:transform .25s ease;font-size:12px;flex-shrink:0;}
+  .flagbanner.collapsed h3 .chevron{transform:rotate(-90deg);}
+  .flagbanner .flagbody{
+    display:grid;grid-template-rows:1fr;transition:grid-template-rows .3s ease, opacity .25s ease, margin-top .3s ease;
+    margin-top:10px; opacity:1;
+  }
+  .flagbanner.collapsed .flagbody{grid-template-rows:0fr; opacity:0; margin-top:0;}
+  .flagbanner .flagbody-inner{overflow:hidden;}
+  .flagbanner .flagrow{display:flex;gap:10px;margin-bottom:8px;line-height:1.5;}
+  .flagbanner .flagrow:last-child{margin-bottom:0;}
+  .flagnum{flex-shrink:0;width:22px;height:22px;border-radius:50%;background:#7a5e0d;color:#fef3c7;
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;}
+  .flagbanner b{color:#fef3c7;}
+  .flag-resolved{opacity:.55;}
+  .flag-resolved .flagnum{background:#14532d;color:#bbf7d0;}
+  .flag-partial .flagnum{background:#7f1d1d;color:#fecaca;}
+  .flagrow[data-flag="2"] .flagnum{background:#7c2d12;color:#fed7aa;}
+  .flagrow[data-flag="3"] .flagnum{background:#1e3a8a;color:#bfdbfe;}
+  .flagrow{transition:background .3s, box-shadow .3s; border-radius:6px; padding:4px 6px; margin-left:-6px; margin-right:-6px;}
+  .flagrow.flag-highlight{background:#4a3a06; box-shadow:0 0 0 2px #fbbf24;}
+  .controls{display:flex;gap:6px;}
+  .controls button{
+    background:#1a2540;border:1px solid var(--line);color:var(--text);
+    padding:6px 10px;border-radius:6px;cursor:pointer;font-size:12px;
+  }
+  .controls button:hover{background:#22304f;}
+  .controls button.toggle-on{background:#134e2e;border-color:#22c55e;color:#bbf7d0;}
+  .traylayer{display:none;}
+  body.tray-mode .traylayer{display:block;}
+  .trayrung{stroke:#94a3b8;stroke-width:1;opacity:.85;}
+  .trayrail{stroke:#cbd5e1;stroke-width:1.4;fill:none;opacity:.9;}
+  .traylabel{fill:#e2e8f0;font-size:6px;font-weight:600;}
+  .traylabel-sm{fill:#94a3b8;font-size:5.5px;}
+  .traybox{cursor:pointer;}
+  #stage{
+    position:relative;overflow:auto;height:calc(100vh - 108px);
+    cursor:grab;background:
+      radial-gradient(circle at 20% 10%, #2c3c56 0%, transparent 60%),
+      var(--bg);
+  }
+  #stage.dragging{cursor:grabbing;}
+  #svgwrap{transform-origin:0 0;}
+  #oneline{display:block;}
+  svg text{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',Helvetica,Arial,sans-serif;}
+  .lbl{fill:var(--text);font-size:11px;}
+  .lbl-sm{fill:var(--muted);font-size:9px;}
+  .lbl-tag{fill:#cbd5e1;font-size:9.5px;font-weight:600;}
+  .zone-label{font-size:13px;font-weight:700;letter-spacing:1px;}
+  .section-label{font-size:20px;font-weight:800;letter-spacing:2px;}
+  .flow-wire{stroke-dasharray:8 4;animation:flowDown 1.1s linear infinite;}
+  .flow-wire-up{stroke-dasharray:8 4;animation:flowUp 1.1s linear infinite;}
+  @keyframes flowDown{0%{stroke-dashoffset:40}100%{stroke-dashoffset:0}}
+  @keyframes flowUp{0%{stroke-dashoffset:0}100%{stroke-dashoffset:40}}
+  .col{cursor:pointer;}
+  .col:hover .colhit{fill-opacity:.06;}
+  .dim{opacity:.25 !important; transition:opacity .3s;}
+  .flagmark{cursor:pointer;}
+  .flagmark .flagpole{stroke:#cbd5e1;stroke-width:2;stroke-linecap:round;}
+  .flagmark .flagcloth{fill:#facc15;stroke:#ca8a04;stroke-width:1;filter:drop-shadow(0 0 3px rgba(250,204,21,.7));}
+  .flagmark:hover .flagcloth{filter:drop-shadow(0 0 6px rgba(250,204,21,1));}
+  #tooltip{
+    position:fixed;pointer-events:none;max-width:380px;
+    background:#0b1526;border:1px solid #2a3a5c;border-radius:8px;
+    padding:10px 12px;font-size:12px;line-height:1.5;color:#dbe4f3;
+    box-shadow:0 8px 24px rgba(0,0,0,.5);z-index:50;display:none;
+  }
+  #tooltip.flagtip{border-color:#7a5e0d;background:#1a1506;}
+  #tooltip.flagtip b{color:#fbbf24;}
+  #tooltip b{color:#93c5fd;}
+  .legend{position:fixed;bottom:14px;left:14px;background:#0b1526;border:1px solid var(--line);
+    border-radius:8px;padding:10px 14px;font-size:11px;color:var(--muted);z-index:15;display:flex;gap:14px;flex-wrap:wrap;max-width:90vw;}
+  .legend span{display:inline-flex;align-items:center;gap:6px;}
+  .swatch{width:10px;height:10px;border-radius:2px;display:inline-block;}
+  .no-print{}
+  @media print{
+    header,.controls,.legend,#tooltip,.no-print,.tabbar{display:none !important;}
+    #stage{overflow:visible;height:auto;}
+    #svgwrap{transform:none !important;}
+    body{background:#fff;}
+  }
+
+  /* ---------- MOBILE / SMALL SCREEN LAYOUT ---------- */
+  @media (max-width: 768px){
+    header{
+      flex-wrap:wrap; padding:10px 12px; gap:8px;
+    }
+    header h1{font-size:13px; line-height:1.3;}
+    header .sub{font-size:10px;}
+    .badges{gap:6px;}
+    .badge{font-size:9.5px; padding:2px 7px;}
+    .controls{width:100%; justify-content:space-between; gap:4px;}
+    .controls button{
+      flex:1 1 auto; font-size:11px; padding:8px 6px; min-height:36px;
+    }
+    .tabbar{
+      overflow-x:auto; -webkit-overflow-scrolling:touch; flex-wrap:nowrap;
+      padding:8px 12px; top:auto; position:static;
+    }
+    .tab{flex:0 0 auto; font-size:11px; padding:7px 11px; white-space:nowrap;}
+    /* Header + tabbar are no longer both sticky at fixed offsets on mobile (their combined
+       height is unpredictable once wrapped), so the stage just fills remaining space below
+       whatever the natural document flow produces. */
+    #stage{
+      height:70vh; min-height:360px;
+    }
+    .flagbanner{
+      margin:10px 12px 0 12px; padding:12px 14px; font-size:11.5px;
+    }
+    .flagbanner h3{font-size:12px; gap:6px;}
+    .flagbanner h3 .flagcount{font-size:10px; padding:2px 7px;}
+    .legend{
+      position:static; margin:10px 12px; max-width:none;
+      font-size:10px; padding:8px 10px; gap:8px;
+    }
+    #tooltip{max-width:80vw; font-size:11px;}
+    .flagmark{touch-action:none;} /* ensure tap doesn't get eaten by scroll gesture */
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>APPLE DC — AZ5 · Site-Wide Electrical One-Line (Consolidated)</h1>
+    <div class="sub">Utility → Generators → MV Switchgear → Data Hall J (5100) &amp; Data Hall K (5500) → Life Safety · Project 251103SF · AlfaTech</div>
+  </div>
+  <div class="badges">
+    <span class="badge badge-status">60% DESIGN DEVELOPMENT · NOT FOR CONSTRUCTION</span>
+    <span class="badge badge-flag">4 FLAGS (1 resolved)</span>
+    <span class="badge badge-rev">Rev 0 · 2026-06-23</span>
+  </div>
+  <div class="controls no-print">
+    <button id="zoomOut">－</button>
+    <button id="zoomReset">Reset</button>
+    <button id="zoomIn">＋</button>
+    <button id="trayToggle">🗄 Show Cable Tray</button>
+    <button id="printBtn">Print / PDF</button>
+  </div>
+</header>
+
+<div class="tabbar no-print">
+  <button class="tab active" data-jump="0">Overview (Full Site)</button>
+  <button class="tab" data-jump="1">MV Utility / Gen Switchgear</button>
+  <button class="tab" data-jump="2">Generator Plant (5100+5500)</button>
+  <button class="tab" data-jump="3">Data Hall J (5100)</button>
+  <button class="tab" data-jump="4">Data Hall K (5500)</button>
+  <button class="tab" data-jump="5">Life Safety</button>
+</div>
+
+<div class="flagbanner no-print" id="flagBanner">
+  <h3 id="flagBannerToggle"><span>▲ Site-Wide Visual QA Flags — Verified Against Source Drawings (AlfaTech DD Set, 2026-06-23)</span><span class="flagcount">4 flags</span><span class="chevron">▼</span></h3>
+  <div class="flagbody"><div class="flagbody-inner">
+  <div class="flagrow flag-partial" data-flag="1">
+    <span class="flagnum">1</span>
+    <div><b>CSUB Primary vs Alternate breaker mismatch — confirmed site-wide (8 of 8 UPS systems, both data halls).</b> On every CSUB-1 (Primary), the first output breaker is 1600AF/1600AT. On every mirrored CSUB-2 (Alternate), it's downsized to 1000AT/1000AF with a 350AR rating plug — confirmed identical across all 4 systems in Data Hall K / Room 5500 (E-6257–60) <b>and</b> all 4 systems in Data Hall J / Room 5100 (E-6251–54). Sheet E-6105 Note 3 explains the Alternate path is a generator-backed maintenance/failure mode (not continuous full UPS load), which supports this being an intentional design standard rather than an error. <b>Still recommend a confirming RFI</b> on the specific load basis and downstream STS/PDU coordination — status downgraded from "likely error" to "design-intent-plausible, pending load calc confirmation."</div>
+  </div>
+  <div class="flagrow" data-flag="2">
+    <span class="flagnum">2</span>
+    <div><b>Rack density inconsistency between hall halves (Data Hall K / Room 5500) — now cross-confirmed against architectural drawings.</b> Systems 1&amp;2 (35-rack rows, E-6261) and Systems 3&amp;4 (30-rack rows, E-6262) both report 272.75kW/row — implies ~30% higher kW/rack assumption in one half with no differentiating note. The architectural containment axo (A-4010) and overall plan (A-1010) confirm the physical pairing: 35-rack rows pair into 70-rack/545.5kW HAC pods, while 30-rack rows pair into 60-rack/545.5kW HAC pods — same total kW per containment pod despite the 10-rack difference, which is the root of the discrepancy. Recommend confirming intended per-rack power density before PDU/busway procurement, and checking Data Hall J's (Room 5100) equivalent PDU sheets for the same pattern.</div>
+  </div>
+  <div class="flagrow" data-flag="3">
+    <span class="flagnum">3</span>
+    <div><b>STS tag reuse across sheets.</b> STS tags appear on both UPS system sheets and downstream PDU/CTP sheets. Confirmed as the same physical equipment referenced from two views — not duplicates. Flagged only to ensure equipment register de-duplicates correctly across all 8 UPS systems.</div>
+  </div>
+  <div class="flagrow flag-resolved" data-flag="hrg">
+    <span class="flagnum">✓</span>
+    <div><b>HRG grounding on TS2 — RESOLVED, no issue.</b> Confirmed visually on E-6257: TS2 has explicit HRG resistor to ground identical to TS1. Both transformers per system are HRG, consistent across the set. Flag closed.</div>
+  </div>
+  </div></div>
+</div>
+
+<div id="stage">
+  <div id="svgwrap">
+    <svg id="oneline" width="2900" height="3200" viewBox="0 0 2900 3200" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="2.2" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+
+      <rect x="0" y="0" width="2900" height="3200" fill="#1e293b"/>
+
+      <!-- ================= SECTION 1: UTILITY + MV SWITCHGEAR ================= -->
+      <g id="sec-utility">
+        <rect x="20" y="20" width="2860" height="260" rx:="8" fill="#7f1d1d" opacity=".08"/>
+        <text x="40" y="50" class="section-label" fill="#ef4444">UTILITY &amp; 12.47kV I/J SWITCHGEAR — E-6115</text>
+
+        <!-- Utility source -->
+        <g id="utilA">
+          <circle cx="140" cy="120" r="20" fill="#1c1107" stroke="#ef4444" stroke-width="2"/>
+          <text x="140" y="115" text-anchor="middle" class="lbl-sm" fill="#fca5a5">UTILITY</text>
+          <text x="140" y="126" text-anchor="middle" class="lbl-sm" fill="#fca5a5">McGinnis</text>
+          <text x="200" y="120" class="lbl-sm">Bay-2 · 33.6/44.8/56 MVA</text>
+        </g>
+        <g id="utilB">
+          <circle cx="140" cy="200" r="20" fill="#0a1a2e" stroke="#3b82f6" stroke-width="2"/>
+          <text x="140" y="195" text-anchor="middle" class="lbl-sm" fill="#93c5fd">UTILITY</text>
+          <text x="140" y="206" text-anchor="middle" class="lbl-sm" fill="#93c5fd">McGinnis</text>
+          <text x="200" y="200" class="lbl-sm">Bay-3 · 33.6/44.8/56 MVA</text>
+        </g>
+        <line x1="160" y1="120" x2="400" y2="120" stroke="#ef4444" stroke-width="2" class="flow-wire"/>
+        <line x1="160" y1="200" x2="400" y2="200" stroke="#3b82f6" stroke-width="2" class="flow-wire"/>
+
+        <rect x="400" y="100" width="140" height="40" rx="4" fill="#1a0a0a" stroke="#ef4444" stroke-width="1.5"/>
+        <text x="470" y="123" text-anchor="middle" class="lbl-sm" fill="#fca5a5">MSC-02-US-I</text>
+        <rect x="400" y="180" width="140" height="40" rx="4" fill="#0a1a2e" stroke="#3b82f6" stroke-width="1.5"/>
+        <text x="470" y="203" text-anchor="middle" class="lbl-sm" fill="#93c5fd">MSC-02-US-J</text>
+
+        <text x="600" y="70" class="lbl-tag" fill="#fca5a5">12.47kV Main-Tie-Main Switchgear (I/J), 3000A, N.C./N.O. bus tie</text>
+        <rect x="600" y="90" width="1000" height="14" rx="3" fill="#7f1d1d" stroke="#ef4444" stroke-width="1.5" filter="url(#glow)"/>
+        <line x1="540" y1="120" x2="620" y2="97" stroke="#ef4444" stroke-width="2" class="flow-wire"/>
+        <line x1="540" y1="200" x2="620" y2="97" stroke="#3b82f6" stroke-width="2" class="flow-wire"/>
+        <!-- Switchgear bus down to the main site MV trunk (closes the gap to the 900,240 drop point) -->
+        <line x1="900" y1="104" x2="900" y2="240" stroke="#ef4444" stroke-width="2" class="flow-wire"/>
+        <circle cx="900" cy="104" r="2.4" fill="#ef4444"/>
+
+        <text x="600" y="150" class="lbl-sm">Feeds: MSC-02-5100-TS1/TS2, MSC-02-5500-TS1/TS2, Mechanical Substations M-SUB7-1..4, MDF blocks</text>
+        <text x="600" y="165" class="lbl-sm">Generator paralleling via MSC-02-5100-GS &amp; MSC-02-5500-GS (see Generator Plant section below)</text>
+
+        <rect x="2100" y="60" width="760" height="220" rx="6" fill="#0b1526" stroke="#26324a" stroke-width="1"/>
+        <text x="2124" y="90" style="font-size:15px;font-weight:700" fill="#e2e8f0">Site MV Distribution Philosophy (E-6105 Notes)</text>
+        <text x="2124" y="118" style="font-size:13px" fill="#cbd5e1">Note 2: Alternate (A) CSUBs fed via opposing</text>
+        <text x="2124" y="136" style="font-size:13px" fill="#cbd5e1">transfer switchgear — diversity during failures.</text>
+        <text x="2124" y="164" style="font-size:13px" fill="#cbd5e1">Note 3: Maintenance/break-fix at Primary CSUBs</text>
+        <text x="2124" y="182" style="font-size:13px" fill="#cbd5e1">requires generator support via STS Alt source —</text>
+        <text x="2124" y="200" style="font-size:13px" fill="#cbd5e1">removes ability to remain on UPS (vs. prev. phases).</text>
+        <text x="2124" y="230" style="font-size:13px;font-weight:700" fill="#fbbf24">→ Basis for Flag 1</text>
+        <g id="mvPhilosophyFlagAnchor"></g>
+      </g>
+
+      <!-- ================= SECTION 2: GENERATOR PLANT ================= -->
+      <g id="sec-genplant">
+        <rect x="20" y="300" width="2860" height="420" rx="8" fill="#f97316" opacity=".07"/>
+        <text x="40" y="330" class="section-label" fill="#f97316">GENERATOR PLANT — Data Hall J (5100) &amp; Data Hall K (5500) — E-6125</text>
+
+        <!-- DH-J (5100) Gen lineup — physical gen switchgear rooms 940/943/945/947 per arch dwgs -->
+        <g data-tip="Data Hall J (Room 5100) Generators | MSC-02-5100-GEN1..5 | 5× DIESEL GENERATOR, 3825kW/4781kVA, 12,470V 3Ph 3W each | Feeds MSC-02-5100-GS (Generator Switchgear, physical rooms 940/943/945/947 per A-1300 series) | Breakers BR-5100-GS-GB1..5, 1200A N.O. each, plus BR-5100-GS-FTS1/FTS2 1200A N.C. field tie switches, BR-5100-GS-SPARE 1200A N.O. | NGR 200A 8kV 10sec on each generator neutral | SEL-700G + SEL-587Z protection">
+          <text x="60" y="365" class="lbl-tag" fill="#fdba74">MSC-02-5100-GEN1–5 (×5 Diesel Gensets) — Data Hall J</text>
+          <g id="dh5100gens"></g>
+          <rect x="60" y="470" width="900" height="26" rx="3" fill="#431407" stroke="#f97316" stroke-width="1.5"/>
+          <text x="510" y="488" text-anchor="middle" class="lbl-sm" fill="#fdba74">MSC-02-5100-GS · Generator Switchgear · 12.47kV 1200A · Rooms 940/943/945/947</text>
+        </g>
+
+        <!-- DH-K (5500) Gen lineup -->
+        <g data-tip="Data Hall K (Room 5500) Generators | MSC-02-5500-GEN1..5 | 5× DIESEL GENERATOR, 3825kW/4781kVA, 12,470V 3Ph 3W each | Feeds MSC-02-5500-GS (Generator Switchgear, physical room 917 per A-1329-AC) | Breakers BR-5500-GS-GB1..5, 1200A N.O. each, plus BR-5500-GS-FTS1/FTS2 1200A N.C. field tie switches, BR-5500-GS-SPARE 1200A N.O. | NGR 200A 8kV 10sec on each generator neutral | SEL-700G + SEL-587Z protection">
+          <text x="1500" y="365" class="lbl-tag" fill="#fdba74">MSC-02-5500-GEN1–5 (×5 Diesel Gensets) — Data Hall K</text>
+          <g id="dh5500gens"></g>
+          <rect x="1500" y="470" width="900" height="26" rx="3" fill="#431407" stroke="#f97316" stroke-width="1.5"/>
+          <text x="1950" y="488" text-anchor="middle" class="lbl-sm" fill="#fdba74">MSC-02-5500-GS · Generator Switchgear · 12.47kV 1200A · Room 917</text>
+        </g>
+
+        <text x="60" y="530" class="lbl-sm">86B lockout trips all MSC-02-5100-GS breakers | Tie to MSC-02-5100-TS1/TS2 via BR-5100-TS1-G / BR-5100-TS2-G</text>
+        <text x="1500" y="530" class="lbl-sm">86B lockout trips all MSC-02-5500-GS breakers | Tie to MSC-02-5500-TS1/TS2 via BR-5500-TS1-G / BR-5500-TS2-G</text>
+
+        <text x="60" y="560" class="lbl-sm">Site total standby generation: 10 × 3825kW/4781kVA = 38.25MW / 47.81MVA (5 gens × 2 halls)</text>
+      </g>
+
+      <!-- ================= SECTION 3: DATA HALL 5100 ================= -->
+      <g id="sec-dh5100">
+        <rect x="20" y="740" width="1400" height="1460" rx="8" fill="#3b82f6" opacity=".06"/>
+        <text x="40" y="778" class="section-label" fill="#3b82f6">DATA HALL J (ROOM 5100) — CRITICAL DISTRIBUTION — E-6251–E-6256</text>
+        <text x="40" y="802" class="lbl-sm">Fed by UPS J (Room 5400) · Served by CRAH Gallery J (Room 5700) · Mirror system to Data Hall K · 4× UPS Systems · CSUB Primary/Alternate topology confirmed identical</text>
+        <g id="dh5100systems"></g>
+      </g>
+
+      <!-- ================= SECTION 4: DATA HALL 5500 ================= -->
+      <g id="sec-dh5500">
+        <rect x="1460" y="740" width="1420" height="1460" rx="8" fill="#ef4444" opacity=".06"/>
+        <text x="1480" y="778" class="section-label" fill="#ef4444">DATA HALL K (ROOM 5500) — CRITICAL DISTRIBUTION — E-6257–E-6262</text>
+        <text x="1480" y="802" class="lbl-sm">Fed by UPS K (Room 5300) · Served by CRAH Gallery K (Room 5600) · Full detail (verified against source PDF) · Flags 1 &amp; 2 apply here</text>
+        <g id="dh5500systems"></g>
+      </g>
+
+      <!-- ================= SECTION 5: LIFE SAFETY ================= -->
+      <g id="sec-lifesafety">
+        <rect x="20" y="2180" width="2860" height="260" rx="8" fill="#ec4899" opacity=".08"/>
+        <text x="40" y="2210" class="section-label" fill="#ec4899">LIFE SAFETY DISTRIBUTION — E-6271 (EXISTING)</text>
+        <g id="lifesafetyitems"></g>
+      </g>
+
+      <!-- ================= SECTION 6: SUPPORTING SYSTEMS ================= -->
+      <g id="sec-support">
+        <rect x="20" y="2460" width="2860" height="320" rx="8" fill="#22c55e" opacity=".06"/>
+        <text x="40" y="2490" class="section-label" fill="#22c55e">SUPPORTING ELECTRICAL SYSTEMS — REFERENCE ONLY (NOT YET DETAILED)</text>
+        <g id="supportitems"></g>
+      </g>
+
+      <text x="40" y="3170" class="lbl-sm">AZ5 Site-Wide Electrical One-Line (Consolidated, Flagged) · Rev 0 · 2026-06-23 · Not for Construction · Engineer: AlfaTech · Project 251103SF</text>
+    </svg>
+  </div>
+</div>
+
+<div id="tooltip"></div>
+
+<div class="legend no-print">
+  <span><span class="swatch" style="background:#ef4444"></span> Utility / DH 5500</span>
+  <span><span class="swatch" style="background:#3b82f6"></span> DH 5100 / CSUB Primary</span>
+  <span><span class="swatch" style="background:#f97316"></span> Generator Plant</span>
+  <span><span class="swatch" style="background:#a855f7"></span> CSUB Alternate</span>
+  <span><span class="swatch" style="background:#22c55e"></span> STS/PDU/Busway/Racks/Support</span>
+  <span><span class="swatch" style="background:#ec4899"></span> Life Safety</span>
+  <span>🚩 <span style="color:#fbbf24">Waving flag = flagged discrepancy</span></span>
+  <span>🗄 <span style="color:#cbd5e1">Cable Tray overlay = toggle button, top right (per E-1600 series / E-4010)</span></span>
+</div>
+
+<script>
+const svgNS = "http://www.w3.org/2000/svg";
+function el(tag, attrs, parent){
+  const e = document.createElementNS(svgNS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+
+// Cable tray overlay layer — created early so buildHall() can draw tray segments directly
+// alongside each real wire as it builds the schematic, using identical coordinates (see
+// drawTray calls inside buildHall below). This keeps the tray visually sheathing the actual
+// wiring instead of being a separate, approximated pass added afterward.
+const trayG = el("g",{class:"traylayer",id:"traylayer"});
+document.getElementById("oneline").appendChild(trayG);
+
+// Draws a stylized ladder-style cable tray segment (two rails + rungs) between two points,
+// offset from the schematic wiring so it reads as a distinct physical layer when toggled on.
+// Always call this with the SAME x1,y1,x2,y2 as the real wire it represents, so the tray
+// visually sheaths the actual connection instead of floating independently.
+function drawTray(x1, y1, x2, y2, sizeLabel, tag, parent){
+  const g = el("g",{class:"traybox","data-traytip":`${tag} | Size: ${sizeLabel} | From/To per E-1600 series (Power Cable Tray Plans)`},parent);
+  const dx = x2-x1, dy = y2-y1;
+  const len = Math.sqrt(dx*dx+dy*dy) || 1;
+  const nx = -dy/len, ny = dx/len; // unit normal for rail offset
+  const railOffset = 3;
+  const r1x1=x1+nx*railOffset, r1y1=y1+ny*railOffset, r1x2=x2+nx*railOffset, r1y2=y2+ny*railOffset;
+  const r2x1=x1-nx*railOffset, r2y1=y1-ny*railOffset, r2x2=x2-nx*railOffset, r2y2=y2-ny*railOffset;
+  el("line",{x1:r1x1,y1:r1y1,x2:r1x2,y2:r1y2,class:"trayrail"},g);
+  el("line",{x1:r2x1,y1:r2y1,x2:r2x2,y2:r2y2,class:"trayrail"},g);
+  const rungCount = Math.max(3, Math.round(len/22));
+  for(let i=0;i<=rungCount;i++){
+    const t = i/rungCount;
+    const px = x1+dx*t, py = y1+dy*t;
+    el("line",{
+      x1:px+nx*railOffset,y1:py+ny*railOffset,
+      x2:px-nx*railOffset,y2:py-ny*railOffset,
+      class:"trayrung"
+    },g);
+  }
+  const midx=(x1+x2)/2 + nx*8, midy=(y1+y2)/2 + ny*8;
+  el("text",{x:midx,y:midy,class:"traylabel","text-anchor":"middle"},g).textContent=sizeLabel;
+  return g;
+}
+
+// ---------- SMOOTH CABLE CURVES ----------
+// Real cable/conduit runs look better as smooth vertical S-curves (leave the source straight
+// down, arrive at the destination straight down) rather than raw diagonal lines — this is the
+// same "curveVertical" convention used in most professional flow/org-chart tooling. Used for
+// fan-out/fan-in points (UPS→COD, COD→TS, CSUB→STS) where multiple diagonals converge.
+function vCurvePath(x1,y1,x2,y2){
+  const my = y1 + (y2-y1)/2;
+  return `M ${x1},${y1} C ${x1},${my} ${x2},${my} ${x2},${y2}`;
+}
+function drawWireCurve(x1,y1,x2,y2,color,strokeWidth,cls,parent){
+  return el("path",{d:vCurvePath(x1,y1,x2,y2),fill:"none",stroke:color,"stroke-width":strokeWidth,class:cls},parent);
+}
+function cubicPoint(x1,y1,cx1,cy1,cx2,cy2,x2,y2,t){
+  const u=1-t;
+  return [
+    u*u*u*x1 + 3*u*u*t*cx1 + 3*u*t*t*cx2 + t*t*t*x2,
+    u*u*u*y1 + 3*u*u*t*cy1 + 3*u*t*t*cy2 + t*t*t*y2
+  ];
+}
+function cubicTangent(x1,y1,cx1,cy1,cx2,cy2,x2,y2,t){
+  const u=1-t;
+  return [
+    3*u*u*(cx1-x1) + 6*u*t*(cx2-cx1) + 3*t*t*(x2-cx2),
+    3*u*u*(cy1-y1) + 6*u*t*(cy2-cy1) + 3*t*t*(y2-cy2)
+  ];
+}
+// Curved counterpart of drawTray — samples points along the same S-curve as drawWireCurve so
+// the tray visually hugs a curved cable run instead of only supporting straight segments.
+function drawTrayCurve(x1,y1,x2,y2,sizeLabel,tag,parent){
+  const my = y1 + (y2-y1)/2;
+  const cx1=x1, cy1=my, cx2=x2, cy2=my;
+  const g = el("g",{class:"traybox","data-traytip":`${tag} | Size: ${sizeLabel} | From/To per E-1600 series (Power Cable Tray Plans)`},parent);
+  const N = 14, railOffset = 3;
+  let rail1 = [], rail2 = [], rungs = [];
+  for(let i=0;i<=N;i++){
+    const t = i/N;
+    const [px,py] = cubicPoint(x1,y1,cx1,cy1,cx2,cy2,x2,y2,t);
+    const [dx,dy] = cubicTangent(x1,y1,cx1,cy1,cx2,cy2,x2,y2,t);
+    const len = Math.sqrt(dx*dx+dy*dy)||1;
+    const nx=-dy/len, ny=dx/len;
+    rail1.push(`${px+nx*railOffset},${py+ny*railOffset}`);
+    rail2.push(`${px-nx*railOffset},${py-ny*railOffset}`);
+    if(i>0 && i<N && i%3===0) rungs.push([px,py,nx,ny]);
+  }
+  el("path",{d:"M"+rail1.join(" L "),class:"trayrail",fill:"none"},g);
+  el("path",{d:"M"+rail2.join(" L "),class:"trayrail",fill:"none"},g);
+  rungs.forEach(([px,py,nx,ny])=>{
+    el("line",{x1:px+nx*railOffset,y1:py+ny*railOffset,x2:px-nx*railOffset,y2:py-ny*railOffset,class:"trayrung"},g);
+  });
+  const [mx,myp] = cubicPoint(x1,y1,cx1,cy1,cx2,cy2,x2,y2,0.5);
+  const [mdx,mdy] = cubicTangent(x1,y1,cx1,cy1,cx2,cy2,x2,y2,0.5);
+  const mlen = Math.sqrt(mdx*mdx+mdy*mdy)||1;
+  const mnx=-mdy/mlen, mny=mdx/mlen;
+  el("text",{x:mx+mnx*10,y:myp+mny*10,class:"traylabel","text-anchor":"middle"},g).textContent=sizeLabel;
+  return g;
+}
+function flagMarker(x, y, flagId, tip, parent, color){
+  color = color || "#facc15"; // default yellow if not specified
+  const g = el("g",{class:"flagmark","data-flagtip":tip,"data-flagid":flagId}, parent);
+  // radar ping rings, emanating from the pole base and fading out, staggered so they
+  // read as continuous outward pulses rather than one ring at a time
+  const pingBaseY = y+14;
+  [0, 0.75, 1.5].forEach(delay=>{
+    const ping = el("circle",{
+      cx:x, cy:pingBaseY, r:2,
+      fill:"none", stroke:color, "stroke-width":2, opacity:.9
+    },g);
+    const animR = document.createElementNS(svgNS,"animate");
+    animR.setAttribute("attributeName","r");
+    animR.setAttribute("values","2;22");
+    animR.setAttribute("dur","2.2s");
+    animR.setAttribute("begin",`${delay}s`);
+    animR.setAttribute("repeatCount","indefinite");
+    animR.setAttribute("calcMode","spline");
+    animR.setAttribute("keySplines","0.25 0.1 0.25 1");
+    ping.appendChild(animR);
+    const animO = document.createElementNS(svgNS,"animate");
+    animO.setAttribute("attributeName","opacity");
+    animO.setAttribute("values",".9;0");
+    animO.setAttribute("dur","2.2s");
+    animO.setAttribute("begin",`${delay}s`);
+    animO.setAttribute("repeatCount","indefinite");
+    ping.appendChild(animO);
+    const animW = document.createElementNS(svgNS,"animate");
+    animW.setAttribute("attributeName","stroke-width");
+    animW.setAttribute("values","2.5;0.4");
+    animW.setAttribute("dur","2.2s");
+    animW.setAttribute("begin",`${delay}s`);
+    animW.setAttribute("repeatCount","indefinite");
+    ping.appendChild(animW);
+  });
+  // pole
+  el("line",{x1:x,y1:y-14,x2:x,y2:y+14,class:"flagpole"},g);
+  // ball atop pole
+  el("circle",{cx:x,cy:y-14,r:1.8,fill:"#cbd5e1"},g);
+  // waving pennant attached at top of pole
+  const cloth = el("path",{
+    d:"M0,0 L18,3 L14,7 L18,11 L0,14 Z",
+    transform:`translate(${x},${y-13})`,
+    fill:color, stroke:color==="#facc15"?"#ca8a04":color, "stroke-width":1,
+    style:`filter:drop-shadow(0 0 3px ${color}99)`
+  },g);
+  const anim = document.createElementNS(svgNS,"animate");
+  anim.setAttribute("attributeName","d");
+  anim.setAttribute("dur","1.6s");
+  anim.setAttribute("repeatCount","indefinite");
+  anim.setAttribute("values",
+    "M0,0 L18,3 L14,7 L18,11 L0,14 Z;"+
+    "M0,1 L16,0 L20,7 L16,14 L0,13 Z;"+
+    "M0,0 L18,3 L14,7 L18,11 L0,14 Z"
+  );
+  cloth.appendChild(anim);
+  // flag number badge, placed just right of the pennant
+  el("circle",{cx:x+26,cy:y-6,r:8,fill:"#0b1526",stroke:color,"stroke-width":1.2},g);
+  el("text",{x:x+26,y:y-2,"text-anchor":"middle",style:`font-size:9px;font-weight:800;fill:${color}`},g).textContent=flagId;
+  return g;
+}
+
+// Draws a stylized standby diesel generator: weatherproof canopy/housing, radiator grille
+// on the intake end, exhaust stack on the roof, alternator end-cap ("G"), and a skid base —
+// reads as an actual genset symbol rather than a plain circle.
+function drawGenerator(gx, gy, label, parent){
+  const w = 64, h = 34; // canopy footprint
+  const left = gx - w/2, top = gy - h/2;
+
+  // skid base
+  el("rect",{x:left-4,y:top+h,width:w+8,height:4,rx:1,fill:"#2a1d0a",stroke:"#78390f","stroke-width":1},parent);
+
+  // main canopy/housing body
+  el("rect",{x:left,y:top,width:w,height:h,rx:4,fill:"#1c0f02",stroke:"#f97316","stroke-width":1.8},parent);
+
+  // roofline highlight
+  el("line",{x1:left+3,y1:top+3,x2:left+w-3,y2:top+3,stroke:"#fb923c","stroke-width":1,opacity:.5},parent);
+
+  // exhaust stack (roof-mounted, angled cap)
+  const stackX = left + w*0.72;
+  el("rect",{x:stackX,y:top-9,width:5,height:9,fill:"#2a1d0a",stroke:"#f97316","stroke-width":1},parent);
+  el("ellipse",{cx:stackX+2.5,cy:top-9,rx:3,ry:1.4,fill:"#3a2410",stroke:"#f97316","stroke-width":.8},parent);
+
+  // radiator grille (intake end, left side of housing) — vertical louvers
+  const grilleX = left + 6;
+  for(let i=0;i<4;i++){
+    el("line",{x1:grilleX+i*3,y1:top+6,x2:grilleX+i*3,y2:top+h-6,stroke:"#f97316","stroke-width":1,opacity:.7},parent);
+  }
+
+  // alternator end-cap circle with "G", on the right side of the housing
+  const capX = left + w - 14;
+  el("circle",{cx:capX,cy:gy,r:9,fill:"#1c0f02",stroke:"#f97316","stroke-width":1.6},parent);
+  el("text",{x:capX,y:gy+3.5,"text-anchor":"middle",style:"font-size:9px;font-weight:700",fill:"#f97316"},parent).textContent="G";
+
+  // control panel indicator light (small dot) on housing face
+  el("circle",{cx:left+w-4,y:top+5,r:1.3,fill:"#4ade80"},parent);
+
+  // label beneath the unit
+  el("text",{x:gx,y:top+h+18,"text-anchor":"middle",class:"lbl-sm",fill:"#fdba74"},parent).textContent=label;
+}
+
+// ---------- GENERATOR ROWS ----------
+["dh5100gens","dh5500gens"].forEach((gid,hallIdx)=>{
+  const g = document.getElementById(gid);
+  const baseX = hallIdx===0 ? 60 : 1500;
+  for(let i=0;i<5;i++){
+    const gx = baseX + 40 + i*170;
+    drawGenerator(gx, 420, (hallIdx===0?"5100":"5500")+"-GEN"+(i+1), g);
+    el("line",{x1:gx,y1:440,x2:gx,y2:470,stroke:"#f97316","stroke-width":1.5,class:"flow-wire-up"},g);
+  }
+});
+
+// ---------- DATA HALL SYSTEM BUILDER ----------
+function buildHall(containerId, hallName, hallColor, baseX, baseY, systems, showFlags){
+  const g = document.getElementById(containerId);
+  const colW = 680;
+  systems.forEach(sys=>{
+    const sx = baseX + (sys.col)*colW;
+    el("rect",{x:sx-10,y:baseY,width:colW-20,height:1360,rx:6,fill:hallColor,opacity:.07},g);
+    el("text",{x:sx+colW/2-30,y:baseY+34,class:"zone-label",fill:hallColor,opacity:.9,"text-anchor":"middle"},g).textContent=`${hallName} · SYSTEM ${sys.id}`;
+
+    const col = el("g",{class:"col","data-tip":
+      `${hallName} System ${sys.id} | ${sys.tag}-UPS${sys.id}-1..4 (1050kW/1050kVA ea, 480V 3P3W, 3min EOL@90%) | `+
+      `COD${sys.id}: 4000A 65kAIC UL1558 | ${sys.tsA} & ${sys.tsB}: 2500/3333kVA AA/FA 12.47kV-480V 5.82%Z HRG (both confirmed) | `+
+      `CSUB${sys.id}-1 (Primary) & CSUB${sys.id}-2 (Alt): 4000A 65kAIC dist. class, SKRU interlock | `+
+      `STS${sys.id}-1..6: 1000A 65kAIC each → PDU${sys.id}-1..6 (415/240V 1200A 35kAIC, 831kVA xfmr) | `+
+      `Source dwgs: ${sys.dwg}`
+    }, g);
+    el("rect",{x:sx-10,y:baseY,width:colW-20,height:1360,fill:"#fff",opacity:0,class:"colhit"},col);
+
+    const cx = sx + colW/2 - 60;
+
+    el("circle",{cx:cx,cy:baseY+56,r:12,fill:"#1c1107",stroke:"#d97706","stroke-width":1.8},col);
+    el("text",{x:cx,y:baseY+60,"text-anchor":"middle",style:"font-size:8px",fill:"#f59e0b"},col).textContent="12.47kV";
+    el("line",{x1:cx,y1:baseY+68,x2:cx,y2:baseY+90,stroke:"#f59e0b","stroke-width":2,class:"flow-wire"},col);
+
+    const upsXs = [cx-150,cx-50,cx+50,cx+150];
+    upsXs.forEach((ux,i)=>{
+      el("rect",{x:ux-28,y:baseY+96,width:56,height:38,rx:4,fill:"#1a0a0a",stroke:hallColor,"stroke-width":1.4},col);
+      el("text",{x:ux,y:baseY+112,"text-anchor":"middle",style:"font-size:8px",fill:"#fca5a5"},col).textContent=`UPS${sys.id}-${i+1}`;
+      el("text",{x:ux,y:baseY+123,"text-anchor":"middle",style:"font-size:7px",fill:"#fca5a5"},col).textContent="1050kW";
+      drawWireCurve(ux, baseY+134, cx, baseY+176, hallColor, 1.3, "flow-wire", col);
+      // Tray: UPS → COD, sheathing the exact same curve as the wire above (36"x6" trunk)
+      drawTrayCurve(ux, baseY+134, cx, baseY+176, `36"x6" TRAY`, `${sys.tag}-CT-UPS${sys.id}-${i+1}`, trayG);
+    });
+
+    el("rect",{x:cx-190,y:baseY+172,width:380,height:10,rx:3,fill:"#3b1414",stroke:hallColor,"stroke-width":1.3,filter:"url(#glow)"},col);
+    el("text",{x:cx,y:baseY+165,"text-anchor":"middle",class:"lbl-tag",fill:"#fca5a5"},col).textContent=`${sys.tag}-COD${sys.id} · 4000A 65kAIC`;
+
+    const tsOffsets=[-100,100];
+    const tsNames=[sys.tsA,sys.tsB];
+    tsNames.forEach((tsn,i)=>{
+      const tx = cx+tsOffsets[i];
+      drawWireCurve(cx+(i===0?-85:85), baseY+182, tx, baseY+214, hallColor, 1.3, "flow-wire", col);
+      drawTrayCurve(cx+(i===0?-85:85), baseY+182, tx, baseY+214, `36"x6" TRAY`, `${sys.tag}-CT-COD${sys.id}-${tsn}`, trayG);
+      el("rect",{x:tx-9,y:baseY+214,width:18,height:13,rx:2,fill:"#1a0a0a",stroke:hallColor,"stroke-width":1.3},col);
+
+      el("circle",{cx:tx,cy:baseY+246,r:13,fill:"#1c1107",stroke:"#d97706","stroke-width":1.6},col);
+      el("circle",{cx:tx,cy:baseY+268,r:13,fill:"#050d1a",stroke:"#3b82f6","stroke-width":1.6},col);
+      el("line",{x1:tx,y1:baseY+227,x2:tx,y2:baseY+233,stroke:"#f59e0b","stroke-width":1.3,class:"flow-wire"},col);
+      el("line",{x1:tx,y1:baseY+281,x2:tx,y2:baseY+295,stroke:"#3b82f6","stroke-width":1.3,class:"flow-wire"},col);
+      el("text",{x:tx,y:baseY+316,"text-anchor":"middle",class:"lbl-tag",fill:"#fbbf24"},col).textContent=tsn;
+      el("text",{x:tx,y:baseY+326,"text-anchor":"middle",style:"font-size:6.5px"},col).textContent="2500/3333kVA HRG";
+
+      const csubColor = i===0 ? "#3b82f6" : "#a855f7";
+      el("rect",{x:tx-72,y:baseY+340,width:144,height:9,rx:3,fill:i===0?"#0b2545":"#2e1065",stroke:csubColor,"stroke-width":1.3},col);
+      el("text",{x:tx,y:baseY+335,"text-anchor":"middle",style:"font-size:6.5px",fill:csubColor},col).textContent=(i===0?`CSUB${sys.id}-1 (P)`:`CSUB${sys.id}-2 (A)`)+" 4000A";
+      el("line",{x1:tx,y1:baseY+295,x2:tx,y2:baseY+340,stroke:csubColor,"stroke-width":1.3,class:"flow-wire"},col);
+      drawTray(tx, baseY+295, tx, baseY+340, `36"x6" TRAY`, `${sys.tag}-CT-CSUB${sys.id}${i===0?"-1(P)":"-2(A)"}`, trayG);
+
+      // FLAG 1 marker on Alternate side, only if showFlags
+      if(showFlags && i===0){
+        el("text",{x:tx-60,y:baseY+360,style:"font-size:6.5px",fill:"#9ca3af"},col).textContent="1600AF/1600AT";
+      }
+      if(showFlags && i===1){
+        el("text",{x:tx-58,y:baseY+360,style:"font-size:6.5px",fill:"#fbbf24"},col).textContent="1000AT/350AR ▲";
+        const tip = `FLAG 1 — Breaker mismatch: ${sys.tag}-CSUB${sys.id}-2 (Alt) first output breaker is 1000AT/1000AF w/350AR plug, vs `+
+          `1600AF/1600AT on mirrored CSUB${sys.id}-1 (Primary). Confirmed identical pattern across ALL 8 UPS systems site-wide `+
+          `(both DH 5100 and DH 5500). E-6105 Note 3 suggests this may be intentional (Alt = gen-backed maintenance path, not full continuous UPS load) — `+
+          `still recommend RFI to confirm load basis.`;
+        const fm = flagMarker(tx-75,baseY+350,"1",tip,col,"#ef4444");
+      }
+
+      const stsCount=6, stsSpan=170;
+      for(let s=0;s<stsCount;s++){
+        const stx = tx-stsSpan/2+(stsSpan/(stsCount-1))*s;
+        drawWireCurve(tx, baseY+349, stx, baseY+392, csubColor, 0.9, "flow-wire", col);
+        drawTrayCurve(tx, baseY+349, stx, baseY+392, `18"x4" TRAY`, `${sys.tag}-CT-STS${sys.id}-${s+1}${i===0?"(P)":"(A)"}`, trayG);
+        el("rect",{x:stx-11,y:baseY+392,width:22,height:15,rx:2,fill:"#0b1526",stroke:"#22c55e","stroke-width":1},col);
+        el("text",{x:stx,y:baseY+402,"text-anchor":"middle",style:"font-size:5px",fill:"#86efac"},col).textContent=`STS${sys.id}-${s+1}`;
+        el("line",{x1:stx,y1:baseY+407,x2:stx,y2:baseY+422,stroke:"#22c55e","stroke-width":0.9,class:"flow-wire"},col);
+        drawTray(stx, baseY+407, stx, baseY+422, `18"x4" TRAY`, `${sys.tag}-CT-PDU${sys.id}-${s+1}${i===0?"(P)":"(A)"}`, trayG);
+        el("rect",{x:stx-11,y:baseY+422,width:22,height:12,rx:2,fill:"#0b1526",stroke:"#22c55e","stroke-width":0.9},col);
+        el("text",{x:stx,y:baseY+430,"text-anchor":"middle",style:"font-size:4.5px",fill:"#86efac"},col).textContent=`PDU${sys.id}-${s+1}`;
+      }
+
+      // FLAG 3
+      if(showFlags && i===0){
+        const tip3 = `FLAG 3 — STS tag reuse: ${sys.tag}-STS${sys.id}-1..6 tags appear identically on this UPS system sheet AND the downstream `+
+          `PDU/CTP sheet. Confirmed same physical equipment referenced from two views — not duplicate assets. Flagged to ensure equipment `+
+          `register de-duplicates correctly.`;
+        flagMarker(tx+66,baseY+436,"3",tip3,col,"#3b82f6");
+      }
+    });
+
+    el("rect",{x:cx-190,y:baseY+456,width:380,height:32,rx:4,fill:"#052e16",stroke:"#22c55e","stroke-width":1.1},col);
+    el("text",{x:cx,y:baseY+472,"text-anchor":"middle",style:"font-size:7px",fill:"#86efac"},col).textContent = sys.rackNote;
+    el("text",{x:cx,y:baseY+483,"text-anchor":"middle",style:"font-size:6.5px",fill:"#86efac"},col).textContent = "Source dwg: "+sys.pduDwg;
+
+    // FLAG 2 marker for rack density (DH5500 only, systems 3&4)
+    if(showFlags && sys.flagRackDensity){
+      const tip2 = `FLAG 2 — Rack density inconsistency: this half of the hall (${sys.rackNote}) reports the SAME 272.75kW per row as the `+
+        `other half with a different rack count per row. Implies undocumented per-rack power density difference. Confirmed visually `+
+        `on E-6261 vs E-6262. Recommend confirming intended density before PDU/busway procurement — and checking whether the same `+
+        `pattern exists on DH 5100's equivalent PDU sheets.`;
+      flagMarker(cx,baseY+500,"2",tip2,col,"#f97316");
+    }
+  });
+}
+
+// MV Distribution Philosophy box flag icon (references Flag 1's basis, sized to match
+// on-diagram markers rather than a plain text callout)
+{
+  const anchor = document.getElementById("mvPhilosophyFlagAnchor");
+  const mvTip = `FLAG 1 (context) — Sheet E-6105 Notes 2 &amp; 3 describe the design philosophy behind the `+
+    `CSUB Primary/Alternate breaker mismatch flagged site-wide: Alternate CSUBs are fed via opposing transfer `+
+    `switchgear for diversity, and are a generator-backed maintenance path (not continuous full UPS load). `+
+    `See Flag 1 in the banner above for the full breaker-rating finding.`;
+  flagMarker(2260, 222, "1", mvTip, anchor, "#ef4444");
+}
+
+const dh5100Systems = [
+  {id:1,col:0,tag:"MSC-02-5100",tsA:"TS1",tsB:"TS2",dwg:"E-6251",pduDwg:"E-6255/56 (unverified detail)",rackNote:"Data Hall J (Rm 5100) · rows/rack density not yet cross-checked"},
+  {id:2,col:1,tag:"MSC-02-5100",tsA:"TS2",tsB:"TS1",dwg:"E-6252",pduDwg:"E-6255/56 (unverified detail)",rackNote:"Data Hall J (Rm 5100) · rows/rack density not yet cross-checked"}
+];
+buildHall("dh5100systems","DH-J (5100)","#3b82f6",40,815,dh5100Systems,true);
+
+const dh5100Systems2 = [
+  {id:3,col:0,tag:"MSC-02-5100",tsA:"TS1",tsB:"TS2",dwg:"E-6253",pduDwg:"E-6255/56 (unverified detail)",rackNote:"Data Hall J (Rm 5100) · rows/rack density not yet cross-checked"},
+  {id:4,col:1,tag:"MSC-02-5100",tsA:"TS2",tsB:"TS1",dwg:"E-6254",pduDwg:"E-6255/56 (unverified detail)",rackNote:"Data Hall J (Rm 5100) · rows/rack density not yet cross-checked"}
+];
+// place systems 3&4 below 1&2 within DH5100 band using a y-offset wrapper
+(function(){
+  const g = document.getElementById("dh5100systems");
+  const wrapper = el("g",{transform:"translate(0,700)"},g);
+  wrapper.id = "dh5100systems2inner";
+})();
+buildHallOffset:
+function buildHallOffset(){}
+// Simplify: just call buildHall again targeting a temp group appended with translate
+const tempG = document.createElementNS(svgNS,"g");
+tempG.setAttribute("transform","translate(0,700)");
+document.getElementById("dh5100systems").appendChild(tempG);
+tempG.id = "dh5100systems_row2";
+buildHall("dh5100systems_row2","DH-J (5100)","#3b82f6",40,815,dh5100Systems2,true);
+
+const dh5500Systems = [
+  {id:1,col:0,tag:"MSC-02-5500",tsA:"TS1",tsB:"TS2",dwg:"E-6257",pduDwg:"E-6261 (5 of 6)",rackNote:"Data Hall K (Rm 5500) · Rows 35-44 (35 racks/row) · HAC pairs = 70 racks/545.5kW",flagRackDensity:false},
+  {id:2,col:1,tag:"MSC-02-5500",tsA:"TS2",tsB:"TS1",dwg:"E-6258",pduDwg:"E-6261 (5 of 6)",rackNote:"Data Hall K (Rm 5500) · Rows 23-34 (35 racks/row) · HAC pairs = 70 racks/545.5kW",flagRackDensity:false}
+];
+buildHall("dh5500systems","DH-K (5500)","#ef4444",1480,815,dh5500Systems,true);
+
+const dh5500Systems2 = [
+  {id:3,col:0,tag:"MSC-02-5500",tsA:"TS1",tsB:"TS2",dwg:"E-6259",pduDwg:"E-6262 (6 of 6)",rackNote:"Data Hall K (Rm 5500) · Rows 12-22 (30 racks/row) · HAC pairs = 60 racks/545.5kW (per arch A-4010, confirms Flag 2 density gap)",flagRackDensity:true},
+  {id:4,col:1,tag:"MSC-02-5500",tsA:"TS2",tsB:"TS1",dwg:"E-6260",pduDwg:"E-6262 (6 of 6)",rackNote:"Data Hall K (Rm 5500) · Rows 01-11 (30 racks/row) · HAC pairs = 60 racks/545.5kW (per arch A-4010, confirms Flag 2 density gap)",flagRackDensity:true}
+];
+const tempG2 = document.createElementNS(svgNS,"g");
+tempG2.setAttribute("transform","translate(0,700)");
+document.getElementById("dh5500systems").appendChild(tempG2);
+tempG2.id = "dh5500systems_row2";
+buildHall("dh5500systems_row2","DH-K (5500)","#ef4444",1480,815,dh5500Systems2,true);
+
+// ---------- REAL CONNECTORS: Utility → Hall MV Trunks, Generator → CSUB-2 (Alt) Trunks ----------
+// These replace the previous "dead-end" stub lines with continuous, junction-based routing
+// so power flow is traceable from source all the way to each system.
+const connG = el("g",{id:"connectors"});
+document.getElementById("oneline").insertBefore(connG, document.getElementById("sec-dh5100"));
+
+function elbow(points, color, cls, parent){
+  // points: [[x,y],[x,y],...] drawn as connected straight segments (right-angle routing)
+  for(let i=0;i<points.length-1;i++){
+    el("line",{x1:points[i][0],y1:points[i][1],x2:points[i+1][0],y2:points[i+1][1],
+      stroke:color,"stroke-width":1.6,class:cls},parent);
+  }
+  // junction dots at interior bends
+  for(let i=1;i<points.length-1;i++){
+    el("circle",{cx:points[i][0],cy:points[i][1],r:2.2,fill:color},parent);
+  }
+}
+
+// Hall geometry (matches buildHall's internal math: colW=680, cx = sx + colW/2 - 60)
+const halls = [
+  { name:"5100", baseX:40,  trunkAx:26,   trunkBx:1400, gsX:510,  bandLeft:20,   bandRight:1420 },
+  { name:"5500", baseX:1480, trunkAx:1466, trunkBx:2874, gsX:1950, bandLeft:1460, bandRight:2880 }
+];
+const rowBaseYs = [815, 1515]; // row1 (systems 1&2), row2 (systems 3&4, +700 translate)
+const colCenters = (baseX)=> [baseX+680/2-60, baseX+680+680/2-60]; // [col0 cx, col1 cx]
+
+halls.forEach(hall=>{
+  const [cx0, cx1] = colCenters(hall.baseX);
+  const topMvYs = rowBaseYs.map(by=>by+44);      // top MV entry point per row
+  const csub2Ys = rowBaseYs.map(by=>by+344);      // CSUB-2 (Alt) bus center per row (rect at baseY+340, height 9)
+  const csub2Xs = [cx0+100, cx1+100];             // Alt CSUB sits at cx+100 in buildHall
+
+  // --- Trunk A: Utility MV feed. Vertical spine rises to a horizontal tap-off bar positioned
+  // just above the MV circles, then short vertical drop stubs feed down into each circle.
+  // (Avoids drawing two colinear branch lines from the same point, which visually overlapped
+  // and looked like one line passing straight through the first system's circle.)
+  topMvYs.forEach(y=>{
+    const tapY = y - 20; // horizontal tap-off bar, sits above the circle tops
+    elbow([[hall.trunkAx,735],[hall.trunkAx,tapY]], "#ef4444", "flow-wire", connG);
+    el("line",{x1:hall.trunkAx,y1:tapY,x2:cx1,y2:tapY,stroke:"#ef4444","stroke-width":1.6,class:"flow-wire"},connG);
+    [cx0,cx1].forEach(cx=>{
+      el("circle",{cx:cx,cy:tapY,r:2.6,fill:"#ef4444"},connG); // junction dot on the tap-off bar
+      el("line",{x1:cx,y1:tapY,x2:cx,y2:y-12,stroke:"#ef4444","stroke-width":1.6,class:"flow-wire"},connG); // drop stub into circle top
+    });
+  });
+
+  // --- Trunk B: Generator feed, vertical spine feeding each system's CSUB-2 (Alt) bus ---
+  elbow([[hall.trunkBx,700],[hall.trunkBx,csub2Ys[1]+6]], "#f97316", "flow-wire-up", connG);
+  csub2Ys.forEach((y,ri)=>{
+    elbow([[hall.trunkBx,y],[csub2Xs[0],y]], "#f97316", "flow-wire-up", connG);
+    elbow([[hall.trunkBx,y],[csub2Xs[1],y]], "#f97316", "flow-wire-up", connG);
+  });
+
+  // --- Generator Switchgear bus → Trunk B (elbow via y=700) ---
+  elbow([[hall.gsX,496],[hall.gsX,700],[hall.trunkBx,700]], "#f97316", "flow-wire-up", connG);
+});
+
+// --- Utility MV bus → Trunk A drop (single spine splitting to both halls) ---
+// Routed above both Data Hall section headers (sections start at y:740) and around the
+// Generator Switchgear boxes (x:60-960 and x:1500-2400 at y:470-496), so the utility feed
+// never visually crosses through a section title band or the generator switchgear bus.
+elbow([[900,240],[900,300],[1240,300],[1240,720],[halls[0].trunkAx,720],[halls[0].trunkAx,735]], "#ef4444", "flow-wire", connG);
+elbow([[1240,720],[halls[1].trunkAx,720],[halls[1].trunkAx,735]], "#ef4444", "flow-wire", connG);
+
+// ---------- CABLE TRAY OVERLAY: Generator Switchgear trunk (toggleable, Option B) ----------
+// Real tray sizes/tags pulled from source drawings: E-1600 series (Power Cable Tray Plans,
+// 1"=10' scale) and E-4010. UPS/COD/CSUB/STS/PDU tray segments are drawn inline inside
+// buildHall() above (using identical coordinates to the real wires). This section covers the
+// remaining Generator Switchgear → GS bus trunk tray, which sits outside buildHall's scope.
+halls.forEach(hall=>{
+  const hallTag = hall.name==="5100" ? "MSC-02-5100" : "MSC-02-5500";
+  drawTray(hall.gsX, 470, hall.gsX, 496, `36"x6" TRAY`, `${hallTag}-CT-GS`, trayG);
+});
+
+
+// ---------- LIFE SAFETY ----------
+const lsG = document.getElementById("lifesafetyitems");
+const lsCol = el("g",{class:"col","data-tip":
+  "Life Safety Distribution (E-6271) | (E) Gen Set #1: 700kW/875kVA 0.8PF 480/277V | "+
+  "(E) EEEPD_01A/01B: 480/277V 3Ph4W 1600A | (E) MSC-02-E-ATS1-1/1-2: 480V 3-pole 600A 50kAIC | "+
+  "(E) MSC-02-E-UPS3: 225KW/225KVA 480V 3Ph3W 65kAIC, 5min EOL | (E) MSC-02-E-COD3: 800A 65kAIC | "+
+  "(E) MSC-02-MDF-UPS1A/1B (Toshiba, derated 144kVA) → 150kVA xfmrs → panels UPS-1A-1/1A-2, UPS-1B-1/1B-2"
+},lsG);
+el("rect",{x:20,y:2180,width:2860,height:0,fill:"none"},lsCol);
+const lsItems = [
+  {x:120,label:"(E) GEN SET #1",sub:"700kW/875kVA 0.8PF"},
+  {x:500,label:"(E) EEEPD_01A/01B",sub:"480/277V 1600A"},
+  {x:880,label:"(E) ATS1-1 / ATS1-2",sub:"480V 3P 600A 50kAIC"},
+  {x:1260,label:"(E) MSC-02-E-UPS3",sub:"225KW/KVA 65kAIC 5min EOL"},
+  {x:1640,label:"(E) MSC-02-E-COD3",sub:"800A 65kAIC"},
+  {x:2020,label:"(E) MSC-02-MDF-UPS1A/1B",sub:"Toshiba, derated 144kVA"},
+  {x:2400,label:"Emergency Lighting Panels",sub:"DH 4100/4500 · 5100/5500"}
+];
+lsItems.forEach(it=>{
+  el("rect",{x:it.x-95,y:2250,width:190,height:44,rx:4,fill:"#3b0a24",stroke:"#ec4899","stroke-width":1.3},lsCol);
+  el("text",{x:it.x,y:2270,"text-anchor":"middle",class:"lbl-sm",fill:"#f9a8d4"},lsCol).textContent=it.label;
+  el("text",{x:it.x,y:2284,"text-anchor":"middle",style:"font-size:8px",fill:"#f472b6"},lsCol).textContent=it.sub;
+});
+el("line",{x1:120,y1:2300,x2:2400,y2:2300,stroke:"#ec4899","stroke-width":1,opacity:.4,"stroke-dasharray":"4,3"},lsCol);
+
+// ---------- SUPPORTING SYSTEMS (not yet detailed) ----------
+const supG = document.getElementById("supportitems");
+const supItems = [
+  {x:180,  label:"E-6208 Grounding One-Line", sub:"Site grounding riser — not yet built"},
+  {x:600,  label:"E-6342/6346 Gen Relay Diagrams", sub:"DH 5100/5500 protection — not yet built"},
+  {x:1020, label:"E-6405/6406/6407 125VDC + M-SUB", sub:"Station battery, MSUB-01A/B — not yet built"},
+  {x:1440, label:"E-6610/6620 Interconnection + SST", sub:"Sequence of operation — not yet built"},
+  {x:1860, label:"E-6701 POP/POE1 Distribution", sub:"Telecom/security power — not yet built"},
+  {x:2280, label:"DH 4100/4500 Critical Distribution", sub:"Referenced but not in this drawing set pull — verify separate sheet series"}
+];
+supItems.forEach(it=>{
+  const c = el("g",{class:"col","data-tip":`${it.label} | ${it.sub} | Not yet extracted/verified — pending next pass`},supG);
+  el("rect",{x:it.x-105,y:2530,width:210,height:50,rx:4,fill:"#052e16",stroke:"#22c55e","stroke-width":1.2,"stroke-dasharray":"5,3"},c);
+  el("text",{x:it.x,y:2552,"text-anchor":"middle",class:"lbl-sm",fill:"#86efac"},c).textContent=it.label;
+  el("text",{x:it.x,y:2566,"text-anchor":"middle",style:"font-size:7.5px",fill:"#4ade80"},c).textContent=it.sub;
+});
+
+// ---------- INTERACTIVITY ----------
+const tooltip = document.getElementById("tooltip");
+document.querySelectorAll(".col").forEach(colEl=>{
+  colEl.addEventListener("mousemove",(e)=>{
+    if (e.target.closest(".flagmark")) return;
+    tooltip.classList.remove("flagtip");
+    tooltip.style.display="block";
+    tooltip.style.left=(e.clientX+16)+"px";
+    tooltip.style.top=(e.clientY+16)+"px";
+    const tip = colEl.getAttribute("data-tip")||"";
+    tooltip.innerHTML = tip.split(" | ").map(p=>`<div>${p}</div>`).join("");
+  });
+  colEl.addEventListener("mouseleave",()=>{ tooltip.style.display="none"; });
+  colEl.addEventListener("click",(e)=>{
+    if (e.target.closest(".flagmark")) return;
+    if (isDragging) return; // don't treat a drag-release as a click-to-zoom
+    document.querySelectorAll(".col").forEach(o=>{ if(o!==colEl) o.classList.add("dim"); });
+    setTimeout(()=>{ document.querySelectorAll(".col").forEach(o=>o.classList.remove("dim")); },2500);
+    zoomToElement(colEl);
+  });
+});
+document.querySelectorAll(".flagmark").forEach(fm=>{
+  fm.addEventListener("mousemove",(e)=>{
+    e.stopPropagation();
+    tooltip.classList.add("flagtip");
+    tooltip.style.display="block";
+    tooltip.style.left=(e.clientX+16)+"px";
+    tooltip.style.top=(e.clientY+16)+"px";
+    tooltip.innerHTML=`<div>${fm.getAttribute("data-flagtip")}</div>`;
+  });
+  fm.addEventListener("mouseleave",(e)=>{ e.stopPropagation(); tooltip.style.display="none"; });
+  fm.addEventListener("click",(e)=>{
+    e.stopPropagation();
+    const flagId = fm.getAttribute("data-flagid");
+    const row = document.querySelector(`.flagrow[data-flag="${flagId}"]`);
+    if(row){
+      row.scrollIntoView({behavior:"smooth", block:"center"});
+      document.querySelectorAll(".flagrow").forEach(r=>r.classList.remove("flag-highlight"));
+      row.classList.add("flag-highlight");
+      setTimeout(()=>row.classList.remove("flag-highlight"), 2600);
+    }
+  });
+});
+
+// ---------- FLAG BANNER COLLAPSE/EXPAND ----------
+document.getElementById("flagBannerToggle").addEventListener("click",()=>{
+  document.getElementById("flagBanner").classList.toggle("collapsed");
+});
+// Start collapsed by default on narrow (phone-width) screens so the diagram is visible
+// without scrolling past the full flag write-ups first.
+if (window.innerWidth <= 768){
+  document.getElementById("flagBanner").classList.add("collapsed");
+}
+
+// ---------- CABLE TRAY TOGGLE + TOOLTIPS ----------
+document.querySelectorAll(".traybox").forEach(tb=>{
+  tb.addEventListener("mousemove",(e)=>{
+    e.stopPropagation();
+    tooltip.classList.remove("flagtip");
+    tooltip.style.display="block";
+    tooltip.style.left=(e.clientX+16)+"px";
+    tooltip.style.top=(e.clientY+16)+"px";
+    const tip = tb.getAttribute("data-traytip")||"";
+    tooltip.innerHTML = "🗄 " + tip.split(" | ").map(p=>`<div>${p}</div>`).join("");
+  });
+  tb.addEventListener("mouseleave",(e)=>{ e.stopPropagation(); tooltip.style.display="none"; });
+});
+
+const trayToggleBtn = document.getElementById("trayToggle");
+let trayVisible = false;
+trayToggleBtn.addEventListener("click",()=>{
+  trayVisible = !trayVisible;
+  document.body.classList.toggle("tray-mode", trayVisible);
+  trayToggleBtn.classList.toggle("toggle-on", trayVisible);
+  trayToggleBtn.textContent = trayVisible ? "🗄 Hide Cable Tray" : "🗄 Show Cable Tray";
+});
+
+// ---------- ZOOM / PAN ----------
+const stage=document.getElementById("stage");
+const svgEl=document.getElementById("oneline");
+const SVG_W = 2900, SVG_H = 3200;
+
+function computeFitScale(){
+  // Fit to width only — the diagram is intentionally taller than the viewport,
+  // so we scroll vertically rather than shrinking everything to fit height too.
+  const availW = stage.clientWidth - 24;
+  return Math.min(availW / SVG_W, 1.5);
+}
+
+let scale = computeFitScale();
+
+// Resize the actual SVG pixel dimensions (viewBox stays fixed) so scrollLeft/scrollTop
+// and getBoundingClientRect() always match real on-screen pixels 1:1 — no CSS-transform drift.
+function applyTransform(){
+  svgEl.setAttribute("width", SVG_W*scale);
+  svgEl.setAttribute("height", SVG_H*scale);
+}
+
+function zoomAt(clientX, clientY, newScale){
+  newScale = Math.min(2.5, Math.max(0.15, newScale));
+  if (newScale === scale) return;
+  const rect = stage.getBoundingClientRect();
+  // point under the cursor, in unscaled SVG content coordinates
+  const contentX = (stage.scrollLeft + (clientX - rect.left)) / scale;
+  const contentY = (stage.scrollTop + (clientY - rect.top)) / scale;
+  scale = newScale;
+  applyTransform();
+  // re-align so the same content point stays under the cursor after resize
+  stage.scrollLeft = contentX * scale - (clientX - rect.left);
+  stage.scrollTop = contentY * scale - (clientY - rect.top);
+}
+
+function resetView(){
+  scale = computeFitScale();
+  applyTransform();
+  stage.scrollTo(0,0);
+}
+
+applyTransform();
+
+document.getElementById("zoomIn").onclick=()=>{
+  const r = stage.getBoundingClientRect();
+  zoomAt(r.left + r.width/2, r.top + r.height/2, scale + 0.15);
+};
+document.getElementById("zoomOut").onclick=()=>{
+  const r = stage.getBoundingClientRect();
+  zoomAt(r.left + r.width/2, r.top + r.height/2, scale - 0.15);
+};
+document.getElementById("zoomReset").onclick=()=>{ resetView(); };
+document.getElementById("printBtn").onclick=()=>{window.print();};
+
+stage.addEventListener("wheel",(e)=>{
+  if(e.metaKey||e.ctrlKey){
+    e.preventDefault();
+    const delta = e.deltaY<0 ? scale*0.08 : -scale*0.08;
+    zoomAt(e.clientX, e.clientY, scale + delta);
+  }
+},{passive:false});
+
+let resizeTimer;
+window.addEventListener("resize",()=>{
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(resetView, 150);
+});
+
+// Zoom-to-element: scales up (if needed) and centers the stage on a given SVG element's
+// bounding box. Used when clicking a system/column/block so the view actually jumps to it
+// instead of just dimming everything else.
+function zoomToElement(svgGroupEl, targetScale){
+  const bbox = svgGroupEl.getBBox(); // in unscaled SVG viewBox coordinates
+  const desired = targetScale || Math.min(2.5, Math.max(scale, (stage.clientWidth-40) / bbox.width, 0.9));
+  scale = Math.min(2.5, Math.max(0.15, desired));
+  applyTransform();
+  const centerX = (bbox.x + bbox.width/2) * scale;
+  const centerY = (bbox.y + bbox.height/2) * scale;
+  stage.scrollTo({
+    left: centerX - stage.clientWidth/2,
+    top: centerY - stage.clientHeight/2,
+    behavior: "smooth"
+  });
+}
+
+// Drag-to-pan: works from anywhere on the stage (including over equipment columns),
+// but only triggers on a real drag (>4px movement) so clicks on columns/flags still register.
+let isDragging=false, dragArmed=false, startX, startY, scrollLeft, scrollTop;
+stage.addEventListener("mousedown",(e)=>{
+  dragArmed = true; isDragging = false;
+  startX = e.clientX; startY = e.clientY;
+  scrollLeft = stage.scrollLeft; scrollTop = stage.scrollTop;
+});
+window.addEventListener("mouseup",()=>{
+  dragArmed = false;
+  if (isDragging){ isDragging = false; stage.classList.remove("dragging"); }
+});
+stage.addEventListener("mousemove",(e)=>{
+  if(!dragArmed) return;
+  const dx = e.clientX - startX, dy = e.clientY - startY;
+  if(!isDragging && (Math.abs(dx) > 4 || Math.abs(dy) > 4)){
+    isDragging = true;
+    stage.classList.add("dragging");
+  }
+  if(isDragging){
+    stage.scrollLeft = scrollLeft - dx;
+    stage.scrollTop = scrollTop - dy;
+  }
+});
+
+
+// ---------- TAB JUMP (uses real element bounding boxes, not guessed coordinates) ----------
+const tabSectionIds = {
+  0: null,               // Overview — handled specially (fit-to-width, scroll to top)
+  1: "sec-utility",
+  2: "sec-genplant",
+  3: "sec-dh5100",
+  4: "sec-dh5500",
+  5: "sec-lifesafety"
+};
+document.querySelectorAll(".tab").forEach(t=>{
+  t.addEventListener("click",()=>{
+    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+    t.classList.add("active");
+    const idx = t.getAttribute("data-jump");
+    if(idx==="0"){
+      scale = computeFitScale();
+      applyTransform();
+      stage.scrollTo({left:0, top:0, behavior:"smooth"});
+      return;
+    }
+    const sectionId = tabSectionIds[idx];
+    const sectionEl = sectionId ? document.getElementById(sectionId) : null;
+    if(sectionEl){
+      zoomToElement(sectionEl, Math.max(computeFitScale(), 0.55));
+    }
+  });
+});
+</script>
+
+<div class="no-print" style="max-width:900px;margin:24px auto;padding:16px 20px;background:#26344a;border:1px solid #3c4d6a;border-radius:10px;color:#aab8cc;font-size:13px;">
+  <h3 style="color:#eef2f8;margin-top:0;">How to save as PDF</h3>
+  <ol>
+    <li>Press ⌘P (Mac) or Ctrl+P (Windows)</li>
+    <li>Set destination → "Save as PDF"</li>
+    <li>Paper: Tabloid 17×11" (or A3) Landscape</li>
+    <li>Margins: Minimum / None</li>
+    <li>Enable "Background graphics"</li>
+    <li>Click Save</li>
+  </ol>
+  <p style="margin-bottom:0;"><b>Coverage note:</b> This site-wide diagram consolidates Utility/MV Switchgear (E-6115), Generator Plant (E-6125), Data Hall 5100 &amp; 5500 Critical Distribution (E-6251–E-6262), and Life Safety (E-6271). The dashed green "Supporting Electrical Systems" band lists sheets identified in the drawing index (grounding, relay diagrams, 125VDC, interconnection/SST, POP/POE, DH 4100/4500) that exist in the 142-page set but have not yet been extracted/verified in this pass. Source: Project 251103SF, AlfaTech, 60% Design Development, 2026-06-23, Not for Construction.</p>
+</div>
+
+</body>
+</html>
