@@ -78,6 +78,11 @@
         <p>Interactive tuning reference — injector sizing, fuel math, and target calculations. Live tool, built for dialing in the standalone.</p>
         <span class="card-action">OPEN TOOL →</span>
       </a>
+      <div class="card" style="cursor: pointer;" id="nav-wiring">
+        <h3>Wiring Diagrams</h3>
+        <p>The reference set. OEM VR6 schematics — engine controls, power &amp; ground distribution, starting, instrument cluster. The electrical backbone of the whole build.</p>
+        <span class="card-action">VIEW DIAGRAMS →</span>
+      </div>
       <div class="card" style="cursor: pointer;" id="nav-config">
         <h3>Livery Configurator</h3>
         <p>Forza-style spec builder. Change paint, drop the ride height, swap between OZ Racing wheel designs. Build the look, share the spec.</p>
@@ -121,8 +126,15 @@
     <p>The car ran Unitronic Stage 3 software — a mass-airflow strategy inherited from the factory VR6 calibration. The MAF never produced a usable signal at this power level. Wiring was clean. Sensors tested fine. The airflow analysis below predicts exactly why it couldn't work: the factory housing is calibrated for a naturally aspirated engine, and the turbo setup pushed the sensing element far outside its envelope in two directions at once.</p>
     <p>On boost, the car would build pressure and then go lean and pull itself apart trying to breathe. No airflow reading meant no fuel correction. It wasn't a tune that needed dialing in — it was a metering architecture that couldn't measure what the engine was doing.</p>
 
+    <h2>Running Well — and the Coolant Gremlins</h2>
+    <p>After a full harness rewire, the MAF finally read and the car came alive — it ran well, pulled clean, and felt like the payoff for all the work. But it was never quite trouble-free: persistent, hard-to-pin-down coolant issues kept surfacing. Temps that wouldn't settle, air that kept finding its way back into the system, and behavior that pointed at a cooling layout that was never really designed as a system. Those gremlins are exactly what drove the later rebuild of the entire coolant circuit — metal lines, a custom thermostat housing, a swirl pot, and AN plumbing.</p>
+
     <h2>The Fire</h2>
-    <p>After a full harness rewire, the MAF finally read and the car ran. Then, one hard pull from a stop sign — full throttle — the BBM fuel rail brackets bent under the inertia load, the injectors unseated, and raw fuel found a source. Engine fire. April 2017. The car was saved, but the entire body harness was torched. Nothing that survived the heat could be trusted.</p>
+    <p>One hard pull from a stop sign — full throttle — the BBM fuel rail brackets bent under the inertia load, the injectors unseated, and raw fuel found a source. Engine fire. April 2017. The car was saved, but the entire body harness was torched. Nothing that survived the heat could be trusted.</p>
+
+    <h2>Rewire, Back to Unitronic, and the Throttle-Body Scramble</h2>
+    <p>The car got rewired from the ground up and went back onto Unitronic Stage 3. It ran ok — but it flat refused to play nice with the GRAMS throttle body. With a track date bearing down, there was no time to solve it properly: the intake got modified to run a throttle body off a 1.8T AWP just to physically get the car on track. Not ideal — not at all — but it worked long enough to make the date.</p>
+    <p>Between that band-aid and the coolant gremlins that never fully went away, the car came back apart afterward. Tearing into the cooling system finally turned up a culprit: the radiator had a pinhole. Small leak, big consequences — exactly the kind of slow, intermittent fault that had been poisoning coolant temps all along.</p>
 
     <h2>The Decision: Standalone</h2>
     <p>The rebuild became the moment to stop patching a factory architecture and start over. An Ecumaster EMU Black standalone, running speed-density — manifold pressure, intake air temperature, RPM, and a measured volumetric efficiency table. No MAF in the intake tract at all. The metering problem the calculations had predicted simply disappeared, and the flat 85% VE assumption in the original report was replaced with a real, tuned table. Everything downstream — E85, electronic boost, EGT instrumentation — follows from that decision.</p>
@@ -303,16 +315,59 @@
     <div style="background: linear-gradient(160deg, #1A1C22 0%, #0E0F13 100%); border: 1px solid #26282E; border-radius: 6px; padding: 40px; margin: 32px 0; position: relative; overflow: hidden;">
       <div style="position: absolute; top: 16px; left: 20px; font-size: 11px; letter-spacing: 2px; color: #8B8E96;">GARAGE · 2000 VW GOLF VR6-T</div>
       <svg id="carSvg" viewBox="0 0 640 320" style="width: 100%; height: auto; display: block; margin-top: 20px;" xmlns="http://www.w3.org/2000/svg">
-        <ellipse cx="320" cy="290" rx="270" ry="16" fill="#000" opacity="0.4"></ellipse>
-        <g id="carBody">
-          <path id="bodyPaint" d="M 70 210 L 70 175 Q 72 155 110 150 L 175 108 Q 190 96 220 94 L 400 94 Q 440 95 470 118 L 545 150 Q 580 156 585 178 L 585 210 Z"
-            fill="#C41E1E" stroke="#000" stroke-width="2"></path>
-          <path d="M 190 112 Q 200 100 224 100 L 300 100 L 300 148 L 168 148 Z" fill="#0B0C0E" opacity="0.82"></path>
-          <path d="M 312 100 L 392 100 Q 428 102 452 122 L 470 148 L 312 148 Z" fill="#0B0C0E" opacity="0.82"></path>
-          <rect x="304" y="100" width="6" height="48" fill="#000"></rect>
-          <path id="bodyLower" d="M 70 210 L 585 210 L 585 224 L 70 224 Z" fill="#000" opacity="0.35"></path>
-          <ellipse cx="80" cy="185" rx="8" ry="12" fill="#FFD9A0" opacity="0.9"></ellipse>
-          <rect x="560" y="176" width="22" height="12" rx="2" fill="#E03030"></rect>
+        <!-- blueprint sheet -->
+        <rect x="18" y="44" width="604" height="250" rx="6" fill="#F4F4EF"></rect>
+        <ellipse cx="325" cy="286" rx="255" ry="12" fill="#000" opacity="0.14"></ellipse>
+        <g id="carBody" stroke="#1A1C22" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" fill="none" vector-effect="non-scaling-stroke">
+          <!-- MK4 Golf 2-door outer silhouette (fill = selected paint), front at left -->
+          <path id="bodyPaint" fill="#C41E1E" d="M 52 236
+            C 50 216 52 206 66 199
+            L 120 192
+            C 150 186 182 182 210 176
+            L 258 118
+            C 264 111 272 108 286 108
+            L 420 108
+            C 438 109 452 114 462 126
+            L 520 168
+            C 556 174 576 184 585 200
+            C 590 209 590 220 588 232
+            L 586 250
+            L 542 250
+            A 52 52 0 0 0 438 250
+            L 212 250
+            A 52 52 0 0 0 108 250
+            L 56 250
+            Z"></path>
+          <!-- greenhouse glass -->
+          <path d="M 216 170 L 260 120 L 300 120 L 300 170 Z" fill="#D9E1E6"></path>
+          <path d="M 308 120 L 442 120 L 442 170 L 308 170 Z" fill="#D9E1E6"></path>
+          <path d="M 450 120 L 468 120 C 494 122 514 138 540 162 L 540 170 L 450 170 Z" fill="#D9E1E6"></path>
+          <!-- vent divider in door glass -->
+          <line x1="326" y1="120" x2="326" y2="170" stroke-width="1.3"></line>
+          <!-- A/B/C pillars & window surround -->
+          <path d="M 210 176 L 260 120" stroke-width="1.6"></path>
+          <path d="M 300 116 L 300 172" stroke-width="1.4"></path>
+          <path d="M 446 116 L 446 172" stroke-width="1.4"></path>
+          <path d="M 213 172 L 545 172" stroke-width="1.6"></path>
+          <!-- swage / beltline crease along doors -->
+          <path d="M 70 202 C 160 196 300 194 440 195 L 560 200" stroke-width="1.4"></path>
+          <!-- lower body molding -->
+          <path d="M 96 228 L 212 226 M 438 226 L 560 230" stroke-width="1.4"></path>
+          <!-- door shut line -->
+          <path d="M 372 172 L 372 250" stroke-width="1.4"></path>
+          <!-- side mirror -->
+          <path d="M 252 158 q -13 1 -14 11 q 3 5 14 3 Z" fill="#F4F4EF" stroke-width="1.4"></path>
+          <!-- door handles -->
+          <path d="M 300 190 l 18 0" stroke-width="2.4"></path>
+          <path d="M 396 190 l 18 0" stroke-width="2.4"></path>
+          <!-- headlight -->
+          <path d="M 58 196 C 74 190 92 192 104 200 L 104 208 C 90 204 72 205 60 210 Z" stroke-width="1.4"></path>
+          <!-- front bumper / fog -->
+          <path d="M 56 230 L 120 226" stroke-width="1.4"></path>
+          <!-- tail light -->
+          <path d="M 586 196 L 566 197 L 566 214 L 585 214" stroke-width="1.4"></path>
+          <!-- antenna -->
+          <path d="M 300 116 L 320 92" stroke-width="1.3"></path>
         </g>
         <g id="wheelFront"></g>
         <g id="wheelRear"></g>
@@ -342,11 +397,60 @@
   </div>
 </div>
 
+<div id="wiring" class="page">
+  <div class="container" style="max-width: 1100px;">
+    <div class="back-btn"><button id="btn-back-wiring">← Back to Hub</button></div>
+    <p class="kicker">Electrical Reference</p>
+    <h1 style="font-size: 56px;">Wiring Diagrams</h1>
+    <p class="lead">The standalone electrical architecture — battery in the trunk, distribution, grounds, the EMU Black, and every relay-driven load. Click any block to see what it does and where it stands. OEM reference schematics are below.</p>
+
+    <div style="display: flex; gap: 18px; flex-wrap: wrap; margin: 22px 0 10px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #8B8E96; letter-spacing: 1px;">
+      <span style="display:flex; align-items:center; gap:7px;"><span style="width:11px;height:11px;background:#6fdc8c;border-radius:2px;"></span>DONE</span>
+      <span style="display:flex; align-items:center; gap:7px;"><span style="width:11px;height:11px;background:#FFB000;border-radius:2px;"></span>IN PROGRESS</span>
+      <span style="display:flex; align-items:center; gap:7px;"><span style="width:11px;height:11px;background:#565b66;border-radius:2px;"></span>TO DO</span>
+      <span style="display:flex; align-items:center; gap:7px; margin-left:12px;"><span style="width:16px;height:3px;background:#ff4d3d;"></span>+12V / SWITCHED</span>
+      <span style="display:flex; align-items:center; gap:7px;"><span style="width:16px;height:3px;background:#6b7280;"></span>GROUND</span>
+      <span style="display:flex; align-items:center; gap:7px;"><span style="width:16px;height:3px;background:#4da3ff;"></span>SIGNAL</span>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 300px; gap: 18px; align-items: start;">
+      <div id="schematicWrap" style="position: relative; width: 100%; min-height: 920px; aspect-ratio: 660 / 1180; background: radial-gradient(circle at 50% 30%, #14161c 0%, #0d0e12 100%); border: 1px solid #26282E; border-radius: 6px; overflow: hidden;">
+        <svg id="wireEdges" viewBox="0 0 660 900" preserveAspectRatio="none" style="position:absolute; inset:0; width:100%; height:100%; pointer-events:none;"></svg>
+        <div id="wireNodes" style="position:absolute; inset:0;"></div>
+      </div>
+      <div id="wireDetail" style="background: #121317; border: 1px solid #26282E; border-left: 3px solid #FFB000; border-radius: 4px; padding: 18px; min-height: 200px;">
+        <div style="font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:13px; letter-spacing:2px; text-transform:uppercase; color:#5A5D64;">Select a component</div>
+        <p style="margin-top:10px; color:#8B8E96; font-size:13px;">Tap any block in the diagram to see its role, feed, and build status.</p>
+      </div>
+    </div>
+
+    <h2 style="margin-top: 64px;">OEM Reference Schematics</h2>
+    <div style="display: grid; grid-template-columns: 260px 1fr; gap: 20px; align-items: start; margin-top: 16px;">
+      <div>
+        <h3 class="sec" style="margin-top: 0;">Factory Diagrams</h3>
+        <div id="wireList" style="display: flex; flex-direction: column; gap: 8px;"></div>
+      </div>
+      <div>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+          <div id="wireTitle" style="font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 22px; text-transform: uppercase; letter-spacing: 0.5px;">Engine Controls</div>
+          <a id="wireOpen" href="wiring/engine-controls.pdf" target="_blank" rel="noopener" style="font-size: 12px; letter-spacing: 1px;">OPEN FULL-SIZE ↗</a>
+        </div>
+        <iframe id="wireFrame" src="wiring/engine-controls.pdf" style="display:none;"></iframe>
+        <div id="wireView" style="width: 100%; min-height: 680px; border: 1px solid #26282E; background: #fff; border-radius: 4px; padding: 10px; display: flex; flex-direction: column; gap: 10px; align-items: center; overflow: auto;">
+          <div style="color:#5A5D64; font-family:'JetBrains Mono',monospace; font-size:12px; padding:40px;">Loading diagram…</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
   // Navigation
   document.getElementById('nav-story').addEventListener('click', function() { goToPage('story'); });
   document.getElementById('nav-tracker').addEventListener('click', function() { goToPage('tracker'); });
   document.getElementById('nav-config').addEventListener('click', function() { goToPage('config'); });
+  document.getElementById('nav-wiring').addEventListener('click', function() { goToPage('wiring'); });
+  document.getElementById('btn-back-wiring').addEventListener('click', function() { goToPage('hub'); });
   document.getElementById('btn-back-story').addEventListener('click', function() { goToPage('hub'); });
   document.getElementById('btn-back-tracker').addEventListener('click', function() { goToPage('hub'); });
   document.getElementById('btn-back-config').addEventListener('click', function() { goToPage('hub'); });
@@ -501,7 +605,280 @@
     initTracker();
   }
 
-  // ===== Configurator =====
+  // ===== Interactive wiring schematic =====
+  (function initSchematic() {
+    const wrap = document.getElementById('wireNodes');
+    const svg = document.getElementById('wireEdges');
+    if (!wrap || !svg) return;
+    const S = { done: '#6fdc8c', prog: '#FFB000', todo: '#565b66' };
+    const W = { pwr: '#ff4d3d', gnd: '#6b7280', sig: '#4da3ff' };
+    // x,y are % of the 1000x660 field (node centers)
+    const nodes = [
+      { id:'batt',  label:'Battery',        sub:'Trunk relocation', x:50, y:13, status:'done', detail:'Odyssey battery relocated to the trunk. Positive side distribution just redone — heavy-gauge feed runs forward through the cabin to the front distribution block. Negative bonded to the chassis/frame in the trunk.' },
+      { id:'frame', label:'Chassis Ground',  sub:'Trunk frame',      x:70, y:15, status:'done', detail:'Main earth point: the battery negative is bonded to the chassis/frame in the trunk with a heavy strap to a stud on the floor pan. Every ground ultimately references this point.' },
+      { id:'dist',  label:'Power Dist.',    sub:'Fuse / relay panel',  x:82, y:72, status:'prog', detail:'Engine-bay positive distribution — the fuse & relay panel. Fed by the long run from the trunk battery; feeds the ECU, charging, relay-driven loads and the interior panel. Being wired into the new motorsport harness with Deutsch connectors.' },
+      { id:'gnd',   label:'Ground Bus',     sub:'Chassis / engine',  x:82, y:82, status:'prog', detail:'Ground-side distribution. Still finishing: dedicated grounds for the relays, pumps, fans and horns back to a common bus. This is the current electrical task.' },
+      { id:'ecu',   label:'EMU Black',      sub:'Standalone ECU',    x:18, y:52, status:'done', detail:'Ecumaster EMU Black. Speed-density fueling — reads MAP, IAT, RPM and a measured VE table. MAF input repurposed as IAT. Base tuned last year.' },
+      { id:'iat',   label:'IAT / Sensors',  sub:'MAP · IAT · Flex',  x:63, y:78, status:'done', detail:'Sensor suite into the ECU: manifold pressure, intake air temp (converted from the MAF), and the flex-fuel sensor on the E85-capable lines.' },
+      { id:'awic',  label:'AWIC Pump',      sub:'Relay-driven',      x:48, y:80, status:'prog', detail:'Air-water intercooler circulation pump. Relay + ground still to finish on the ground-side build.' },
+      { id:'arp',   label:'After-Run Pump', sub:'Coolant',           x:68, y:66, status:'prog', detail:'After-run coolant pump — keeps coolant moving post-shutdown to pull heat off the turbo. Relay pending.' },
+      { id:'fans',  label:'Dual Fans',      sub:'Relay-driven',      x:48, y:93, status:'prog', detail:'Dual cooling fans wired to the standalone via relays. Trigger from ECU coolant temp; ground side pending.' },
+      { id:'horns', label:'Horns',          sub:'Relay-driven',      x:82, y:92, status:'todo', detail:'Horn circuit on its own relay. On the list for the ground-side/relay phase.' },
+      { id:'alt',   label:'Alternator',       sub:'Charging',        x:30, y:90, status:'prog', detail:'Alternator charging circuit back to the front distribution block. Alternator physically mounted; final bolts/feed being buttoned up.' },
+      { id:'intfp', label:'Interior Panel', sub:'Cabin power',      x:44, y:38, status:'todo', detail:'Second fuse panel in the cabin, switched by the relay panel (R6). Powers the 120 V inverter for AC power inside the car.' },
+      { id:'laptop', label:'Laptop',        sub:'USB tuning',       x:20, y:30, status:'done', detail:'Tuning laptop inside the car, connected to the EMU Black over USB — live data logging and in-car street tuning.' },
+      { id:'inverter', label:'120V Inverter', sub:'AC power',        x:64, y:31, status:'todo', detail:'120 V inverter powered from the interior panel — provides household AC power inside the car.' },
+      { id:'oem',   label:'OEM Harness',    sub:'Inj · coils · TB · temp', x:50, y:66, status:'done', detail:'Factory engine harness section kept as one bundle — fuel injectors, coilpack, throttle body, coolant temp and the remaining OEM engine sensors — tied into the standalone through a single connector into the EMU Black.' },
+      { id:'relays', label:'Relay Panel',    sub:'6-way · Faststorm', x:66, y:88, status:'todo', detail:'Faststorm 6-relay fused box (40A per slot, built-in diodes). Pin87 (red, all-in-one) to battery positive via power distribution; Pin85 (black, all-in-one) to the ground bus; Pin86 triggers from the EMU Black. R1 & R2: cooling fans 1/2; R3: AWIC pump; R4: after-run pump; R5: dual horns; R6: interior panel.' },
+      { id:'block', label:'Engine / Trans', sub:'Block ground',     x:24, y:64, status:'prog', detail:'Engine block and transmission bonded to the chassis/frame with a heavy ground strap — the high-current earth path for the starter and charging. Ties to the frame alongside the ground bus.' },
+      { id:'efgnd', label:'Frame Ground',   sub:'Engine bay',       x:24, y:79, status:'done', detail:'Engine-bay chassis/frame ground point. The engine/transmission strap and the ground bus both bond here, tying the negative side to the frame.' },
+    ];
+    const edges = [
+      ['batt','dist','pwr'], ['batt','frame','gnd','direct'], ['dist','alt','pwr'],
+      ['dist','ecu','pwr'], ['dist','relays','pwr'], ['ecu','relays','sig'], ['ecu','iat','sig'], ['gnd','ecu','gnd'], ['gnd','relays','gnd'],
+      ['relays','awic','pwr'], ['relays','arp','pwr'], ['relays','fans','pwr'], ['relays','horns','pwr'], ['relays','intfp','pwr'],
+      ['gnd','awic','gnd'], ['gnd','arp','gnd'], ['gnd','fans','gnd'], ['gnd','horns','gnd'], ['intfp','ecu','sig'], ['ecu','oem','sig'], ['ecu','laptop','sig'], ['intfp','inverter','pwr','direct'], ['dist','oem','pwr'], ['block','efgnd','gnd','direct'], ['gnd','efgnd','gnd','direct'],
+    ];
+    const byId = {}; nodes.forEach(n => byId[n.id] = n);
+    const NS = 'http://www.w3.org/2000/svg';
+    // vehicle zone bands (front → rear)
+    const stage = document.getElementById('schematicWrap');
+    const zones = [
+      { label:'TRUNK',      y:0,  h:24, color:'#6fdc8c' },
+      { label:'CABIN',      y:24, h:20, color:'#4da3ff' },
+      { label:'ENGINE BAY', y:44, h:56, color:'#ff4d3d' },
+    ];
+    zones.forEach(z => {
+      const zd = document.createElement('div');
+      zd.style.cssText = 'position:absolute; left:0; right:0; top:' + z.y + '%; height:' + z.h + '%; background:' + z.color + '0d; border-bottom:1px dashed ' + z.color + '33; z-index:0;';
+      zd.innerHTML = '<div style="position:absolute; top:50%; left:8px; transform:translateY(-50%); font-family:\'JetBrains Mono\',monospace; font-size:10px; letter-spacing:2px; color:' + z.color + '; opacity:.65;">' + z.label + '</div>';
+      stage.insertBefore(zd, stage.firstChild);
+    });
+    const dir = document.createElement('div');
+    dir.style.cssText = "position:absolute; top:50%; right:8px; transform:translateY(-50%); writing-mode:vertical-rl; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:2px; color:#5A5D64; z-index:0;";
+    dir.textContent = '\u25B2 REAR \u00B7 \u00B7 \u00B7 \u00B7 \u00B7 FRONT \u25BC';
+    stage.insertBefore(dir, stage.firstChild);
+    // draw edges
+    // Driver-side raintray channel: the main harness runs up the left band,
+    // then branches orthogonally to each load (staggered so the loom reads as parallel runs).
+    // Battery terminal anchor points (+ left post, − right post) in viewBox units
+    const _bx = byId['batt'].x*6.6, _by = byId['batt'].y*9;
+    const posTerm = [_bx - 26, _by - 20];
+    const negTerm = [_bx + 26, _by - 20];
+    edges.forEach(([a,b,t,mode],i) => {
+      const A = byId[a], B = byId[b];
+      let x1 = A.x*6.6, y1 = A.y*9, x2 = B.x*6.6, y2 = B.y*9;
+      if (a === 'batt') { const T = (t === 'pwr') ? posTerm : negTerm; x1 = T[0]; y1 = T[1]; }
+      if (b === 'batt') { const T = (t === 'pwr') ? posTerm : negTerm; x2 = T[0]; y2 = T[1]; }
+      const p = document.createElementNS(NS,'path');
+      if (mode === 'direct') {
+        p.setAttribute('d', `M ${x1} ${y1} L ${x2} ${y2}`);
+      } else {
+        const chX = 590 + (i % 6) * 6;           // passenger-side raintray band (~89-95% x)
+        const s1 = Math.sign(chX - x1) || 1;
+        const vdir = Math.sign(y2 - y1) || 1;
+        const s2 = Math.sign(x2 - chX) || 1;
+        const r1 = Math.min(6, Math.abs(chX - x1), Math.abs(y2 - y1) / 2 || 6);
+        const r2 = Math.min(6, Math.abs(x2 - chX), Math.abs(y2 - y1) / 2 || 6);
+        p.setAttribute('d', `M ${x1} ${y1} L ${chX - s1*r1} ${y1} Q ${chX} ${y1} ${chX} ${y1 + vdir*r1} L ${chX} ${y2 - vdir*r2} Q ${chX} ${y2} ${chX + s2*r2} ${y2} L ${x2} ${y2}`);
+      }
+      p.setAttribute('fill','none');
+      p.setAttribute('stroke', W[t]);
+      p.setAttribute('stroke-width','2.5');
+      p.setAttribute('stroke-opacity','0.5');
+      p.setAttribute('data-a', a); p.setAttribute('data-b', b);
+      if (t==='sig') p.setAttribute('stroke-dasharray','6 5');
+      svg.appendChild(p);
+    });
+    // draw nodes
+    nodes.forEach(n => {
+      const el = document.createElement('button');
+      el.dataset.id = n.id;
+      if (n.id === 'batt') {
+        el.style.cssText = `position:absolute; left:${n.x}%; top:${n.y}%; transform:translate(-50%,-50%); width:88px; z-index:3; background:transparent; border:0; padding:0; cursor:pointer; font-family:'JetBrains Mono',monospace; border-radius:5px; transition:box-shadow .15s ease;`;
+        el.innerHTML =
+          `<div style="position:relative; width:88px; height:44px; background:linear-gradient(#222831,#12151a); border:1px solid #3a3e46; border-radius:5px; box-shadow:inset 0 1px 0 #2c313a;">`+
+            `<div style="position:absolute; top:-6px; left:16px; width:14px; height:9px; background:#d64533; border:1px solid #ef7a6a; border-radius:2px;"></div>`+
+            `<div style="position:absolute; top:-6px; right:16px; width:14px; height:9px; background:#464b54; border:1px solid #6b7280; border-radius:2px;"></div>`+
+            `<div style="position:absolute; top:1px; left:14px; font-size:11px; font-weight:700; color:#ef7a6a; line-height:1;">+</div>`+
+            `<div style="position:absolute; top:1px; right:14px; font-size:11px; font-weight:700; color:#9aa0aa; line-height:1;">–</div>`+
+            `<div style="position:absolute; top:7px; left:8px; right:8px; height:11px; background:#2a2f38; border:1px solid #3a3e46; border-radius:2px; display:flex; align-items:center; justify-content:space-around;">`+
+              `<span style="width:9px; height:3px; background:#454a54; border-radius:1px;"></span><span style="width:9px; height:3px; background:#454a54; border-radius:1px;"></span><span style="width:9px; height:3px; background:#454a54; border-radius:1px;"></span>`+
+            `</div>`+
+            `<div style="position:absolute; bottom:5px; left:0; right:0; text-align:center; font-size:9px; font-weight:700; letter-spacing:1px; color:#E8E6E0;">BATTERY</div>`+
+          `</div>`+
+          `<div style="font-size:8px; color:#8B8E96; margin-top:3px; text-align:center;">${n.sub}</div>`;
+      } else if (n.id === 'frame' || n.id === 'efgnd') {
+        el.style.cssText = `position:absolute; left:${n.x}%; top:${n.y}%; transform:translate(-50%,-50%); width:64px; z-index:3; background:transparent; border:0; padding:0; cursor:pointer; font-family:'JetBrains Mono',monospace; border-radius:5px; transition:box-shadow .15s ease; display:flex; flex-direction:column; align-items:center; gap:3px;`;
+        el.innerHTML =
+          `<svg width="30" height="22" viewBox="0 0 30 22"><g stroke="#6b7280" stroke-width="2" fill="none" stroke-linecap="round"><line x1="15" y1="1" x2="15" y2="7"/><line x1="3" y1="7" x2="27" y2="7"/><line x1="7" y1="13" x2="23" y2="13"/><line x1="11" y1="19" x2="19" y2="19"/></g></svg>`+
+          `<span style="font-size:8px; color:#8B8E96; letter-spacing:.5px; white-space:nowrap;">${n.id === 'efgnd' ? 'ENGINE\u2192FRAME' : 'CHASSIS GND'}</span>`;
+      } else if (n.id === 'laptop') {
+        el.style.cssText = `position:absolute; left:${n.x}%; top:${n.y}%; transform:translate(-50%,-50%); width:78px; z-index:3; background:transparent; border:0; padding:0; cursor:pointer; font-family:'JetBrains Mono',monospace; border-radius:5px; transition:box-shadow .15s ease; display:flex; flex-direction:column; align-items:center; gap:2px;`;
+        el.innerHTML =
+          `<svg width="64" height="40" viewBox="0 0 64 40">`+
+            `<rect x="14" y="3" width="36" height="24" rx="2" fill="#20242b" stroke="#3a3e46" stroke-width="1.5"/>`+
+            `<rect x="17" y="6" width="30" height="18" rx="1" fill="#4da3ff" opacity="0.28"/>`+
+            `<path d="M6 34 L58 34 L54 27 L10 27 Z" fill="#2a2f38" stroke="#3a3e46" stroke-width="1.5" stroke-linejoin="round"/>`+
+            `<line x1="27" y1="30.5" x2="37" y2="30.5" stroke="#4a4f58" stroke-width="1.6" stroke-linecap="round"/>`+
+          `</svg>`+
+          `<span style="font-size:8.5px; font-weight:700; letter-spacing:.4px; color:#E8E6E0;">${n.label}</span>`+
+          `<span style="font-size:7.5px; color:#8B8E96;">${n.sub}</span>`;
+      } else if (n.id === 'alt') {
+        el.style.cssText = `position:absolute; left:${n.x}%; top:${n.y}%; transform:translate(-50%,-50%); width:78px; z-index:3; background:transparent; border:0; padding:0; cursor:pointer; font-family:'JetBrains Mono',monospace; border-radius:5px; transition:box-shadow .15s ease; display:flex; flex-direction:column; align-items:center; gap:2px;`;
+        el.innerHTML =
+          `<svg width="78" height="46" viewBox="0 0 78 46">`+
+            `<line x1="46" y1="23" x2="53" y2="23" stroke="#3a3e46" stroke-width="3"/>`+
+            `<rect x="53" y="14" width="10" height="18" rx="2" fill="#2a2f38" stroke="#4a4f58" stroke-width="1.2"/>`+
+            `<line x1="55" y1="14" x2="55" y2="32" stroke="#3a3e46" stroke-width="1"/><line x1="58" y1="14" x2="58" y2="32" stroke="#3a3e46" stroke-width="1"/><line x1="61" y1="14" x2="61" y2="32" stroke="#3a3e46" stroke-width="1"/>`+
+            `<circle cx="27" cy="23" r="19" fill="#20242b" stroke="#3a3e46" stroke-width="1.5"/>`+
+            `<g stroke="#4a4f58" stroke-width="1.3" stroke-linecap="round">`+
+              `<line x1="35" y1="23" x2="43" y2="23"/><line x1="32.7" y1="28.7" x2="38.3" y2="34.3"/><line x1="27" y1="31" x2="27" y2="39"/><line x1="21.3" y1="28.7" x2="15.7" y2="34.3"/><line x1="19" y1="23" x2="11" y2="23"/><line x1="21.3" y1="17.3" x2="15.7" y2="11.7"/><line x1="32.7" y1="17.3" x2="38.3" y2="11.7"/>`+
+            `</g>`+
+            `<circle cx="27" cy="23" r="5.5" fill="#454a54" stroke="#6b7280" stroke-width="1.2"/>`+
+            `<circle cx="27" cy="5" r="3" fill="#d64533" stroke="#ef7a6a" stroke-width="1"/>`+
+          `</svg>`+
+          `<span style="font-size:8.5px; font-weight:700; letter-spacing:.4px; color:#E8E6E0;">ALTERNATOR</span>`;
+      } else if (n.id === 'relays') {
+        el.style.cssText = `position:absolute; left:${n.x}%; top:${n.y}%; transform:translate(-50%,-50%); width:88px; z-index:2; background:#1a1d24; border:1px solid #31353f; border-top:3px solid ${S[n.status]}; border-radius:5px; padding:6px 5px; cursor:pointer; text-align:center; font-family:'JetBrains Mono',monospace; transition:all .15s ease;`;
+        el.innerHTML =
+          `<div style="display:grid; grid-template-columns:repeat(3,1fr); gap:3px; margin-bottom:4px;">`+
+            [1,2,3,4,5,6].map(k => `<span data-relay="${k}" style="height:11px; display:flex; align-items:center; justify-content:center; font-size:7px; color:#c9ccd2; background:#2a2f38; border:1px solid #4a4f58; border-radius:1px; cursor:pointer;">${k}</span>`).join('')+
+          `</div>`+
+          `<div style="font-size:9.5px; font-weight:600; color:#E8E6E0; line-height:1.12;">${n.label}</div>`+
+          `<div style="font-size:7.5px; color:#8B8E96; margin-top:2px;">${n.sub}</div>`;
+        el.querySelectorAll('[data-relay]').forEach(cell => cell.addEventListener('click', (e) => { e.stopPropagation(); selectRelay(+cell.dataset.relay); }));
+      } else {
+        el.style.cssText = `position:absolute; left:${n.x}%; top:${n.y}%; transform:translate(-50%,-50%); width:74px; z-index:2; background:#1a1d24; border:1px solid #31353f; border-top:3px solid ${S[n.status]}; border-radius:5px; padding:6px 4px; cursor:pointer; text-align:center; font-family:'JetBrains Mono',monospace; transition:all .15s ease;`;
+        el.innerHTML = `<div style="font-size:9.5px; font-weight:600; color:#E8E6E0; line-height:1.12;">${n.label}</div><div style="font-size:7.5px; color:#8B8E96; margin-top:2px; letter-spacing:.2px;">${n.sub}</div>`;
+      }
+      el.addEventListener('click', () => selectNode(n.id));
+      wrap.appendChild(el);
+    });
+    function selectNode(id) {
+      const n = byId[id];
+      wrap.querySelectorAll('button').forEach(b => {
+        const on = b.dataset.id === id;
+        if (b.dataset.id === 'batt' || b.dataset.id === 'frame' || b.dataset.id === 'efgnd' || b.dataset.id === 'alt' || b.dataset.id === 'laptop') {
+          b.style.boxShadow = on ? '0 0 0 3px ' + S[byId[b.dataset.id].status] + '66' : 'none';
+          return;
+        }
+        b.style.background = on ? '#23262e' : '#1a1d24';
+        b.style.borderColor = on ? S[n.status] : '#31353f';
+        b.style.borderTopColor = S[byId[b.dataset.id].status];
+        b.style.boxShadow = on ? '0 0 0 2px ' + S[n.status] + '55' : 'none';
+      });
+      const rp = wrap.querySelector('button[data-id="relays"]');
+      if (rp) rp.querySelectorAll('[data-relay]').forEach(c => { c.style.background = '#2a2f38'; c.style.color = '#c9ccd2'; c.style.borderColor = '#4a4f58'; });
+      svg.querySelectorAll('path').forEach(p => {
+        const on = p.dataset.a === id || p.dataset.b === id;
+        p.setAttribute('stroke-opacity', on ? '1' : '0.15');
+        p.setAttribute('stroke-width', on ? '4' : '2.5');
+      });
+      const statusLabel = { done:'DONE', prog:'IN PROGRESS', todo:'TO DO' }[n.status];
+      document.getElementById('wireDetail').innerHTML =
+        `<div style="display:flex; align-items:center; gap:8px;"><span style="width:11px;height:11px;background:${S[n.status]};border-radius:2px;"></span><span style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:2px; color:${S[n.status]};">${statusLabel}</span></div>`+
+        `<div style="font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:26px; text-transform:uppercase; letter-spacing:.5px; margin:8px 0 2px;">${n.label}</div>`+
+        `<div style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#8B8E96; letter-spacing:1px; margin-bottom:12px;">${n.sub}</div>`+
+        `<p style="color:#B4B6BC; font-size:13px; margin:0;">${n.detail}</p>`;
+    }
+    const relayMap = { 1:['fans','Cooling Fan 1'], 2:['fans','Cooling Fan 2'], 3:['awic','AWIC Pump'], 4:['arp','After-Run Pump'], 5:['horns','Dual Horns'], 6:['intfp','Interior Panel'] };
+    function selectRelay(k) {
+      const [load, name] = relayMap[k] || [null, 'Spare'];
+      wrap.querySelectorAll('button').forEach(b => {
+        const on = b.dataset.id === 'relays' || (load && b.dataset.id === load);
+        if (b.dataset.id === 'batt' || b.dataset.id === 'frame' || b.dataset.id === 'efgnd' || b.dataset.id === 'alt' || b.dataset.id === 'laptop') { b.style.boxShadow = 'none'; return; }
+        b.style.background = on ? '#23262e' : '#1a1d24';
+        b.style.borderColor = on ? S[byId[b.dataset.id].status] : '#31353f';
+        b.style.borderTopColor = S[byId[b.dataset.id].status];
+        b.style.boxShadow = on ? '0 0 0 2px ' + S[byId[b.dataset.id].status] + '55' : 'none';
+      });
+      const panel = wrap.querySelector('button[data-id="relays"]');
+      if (panel) panel.querySelectorAll('[data-relay]').forEach(c => {
+        const sel = (+c.dataset.relay === k);
+        c.style.background = sel ? S.prog : '#2a2f38';
+        c.style.color = sel ? '#12151a' : '#c9ccd2';
+        c.style.borderColor = sel ? S.prog : '#4a4f58';
+      });
+      svg.querySelectorAll('path').forEach(p => {
+        const isRelayEdge = p.dataset.a === 'relays' || p.dataset.b === 'relays';
+        const isOutput = load && ((p.dataset.a === 'relays' && p.dataset.b === load) || (p.dataset.b === 'relays' && p.dataset.a === load));
+        p.setAttribute('stroke-opacity', isOutput ? '1' : (isRelayEdge ? '0.6' : '0.1'));
+        p.setAttribute('stroke-width', isOutput ? '4.5' : '2.5');
+      });
+      document.getElementById('wireDetail').innerHTML =
+        `<div style="display:flex; align-items:center; gap:8px;"><span style="width:11px;height:11px;background:${S.prog};border-radius:2px;"></span><span style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:2px; color:${S.prog};">RELAY ${k}</span></div>`+
+        `<div style="font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:26px; text-transform:uppercase; letter-spacing:.5px; margin:8px 0 2px;">${name}</div>`+
+        `<div style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#8B8E96; letter-spacing:1px; margin-bottom:12px;">Runs: ${load ? byId[load].label : 'nothing (spare)'}</div>`+
+        `<p style="color:#B4B6BC; font-size:13px; margin:0;">${load ? 'Switched +12V output to the ' + byId[load].label.toLowerCase() + '. Coil triggered by the EMU Black; +12V feed from Power Distribution; coil and load ground to the Ground Bus.' : 'Unassigned spare position — wired into the panel and ready for a future load.'}</p>`;
+    }
+    selectNode('ecu');
+  })();
+
+  // ===== Wiring diagram switcher (OEM reference) =====
+  const diagrams = [
+    { id: 'engine-controls', label: 'Engine Controls' },
+    { id: 'power-distribution', label: 'Power Distribution (1·2·3)' },
+    { id: 'ground-distribution-1', label: 'Ground Distribution 1' },
+    { id: 'ground-distribution-2', label: 'Ground Distribution 2' },
+    { id: 'ground-distribution-3', label: 'Ground Distribution 3' },
+    { id: 'starting', label: 'Starting System' },
+    { id: 'instrument-cluster', label: 'Instrument Cluster' }
+  ];
+  (function initWiring() {
+    const list = document.getElementById('wireList');
+    if (!list) return;
+    let pdfjsPromise = null;
+    function loadPdfjs() {
+      if (!pdfjsPromise) {
+        pdfjsPromise = import('https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/build/pdf.min.mjs').then(function(lib) {
+          lib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/build/pdf.worker.min.mjs';
+          return lib;
+        });
+      }
+      return pdfjsPromise;
+    }
+    let renderToken = 0;
+    async function renderPdf(url) {
+      const view = document.getElementById('wireView');
+      const myToken = ++renderToken;
+      view.innerHTML = '<div style="color:#5A5D64; font-family:\'JetBrains Mono\',monospace; font-size:12px; padding:40px;">Rendering diagram…</div>';
+      try {
+        const lib = await loadPdfjs();
+        const doc = await lib.getDocument({ url: url }).promise;
+        if (myToken !== renderToken) return;
+        view.innerHTML = '';
+        for (let p = 1; p <= doc.numPages; p++) {
+          const page = await doc.getPage(p);
+          if (myToken !== renderToken) return;
+          const vp = page.getViewport({ scale: 2 });
+          const canvas = document.createElement('canvas');
+          canvas.width = vp.width; canvas.height = vp.height;
+          canvas.style.cssText = 'width:100%; height:auto; display:block; box-shadow:0 1px 4px rgba(0,0,0,.3);';
+          view.appendChild(canvas);
+          await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
+        }
+      } catch (e) {
+        if (myToken !== renderToken) return;
+        view.innerHTML = '<div style="color:#ff6b6b; font-family:\'JetBrains Mono\',monospace; font-size:12px; padding:40px; text-align:center;">Couldn\'t render inline.<br><a href="' + url + '" target="_blank" rel="noopener">Open full-size ↗</a></div>';
+      }
+    }
+    diagrams.forEach((d, i) => {
+      const b = document.createElement('button');
+      b.textContent = d.label;
+      b.style.cssText = 'text-align:left; background:' + (i===0?'#1A1C22':'#121317') + '; color:#E8E6E0; border:1px solid ' + (i===0?'#FFB000':'#26282E') + '; border-left:3px solid #FFB000; padding:10px 12px; font-family:\'JetBrains Mono\',monospace; font-size:12px; font-weight:500; cursor:pointer;';
+      b.addEventListener('click', function() {
+        document.getElementById('wireTitle').textContent = d.label;
+        document.getElementById('wireOpen').href = 'wiring/' + d.id + '.pdf';
+        [...list.children].forEach(c => { c.style.background = '#121317'; c.style.borderColor = '#26282E'; });
+        b.style.background = '#1A1C22'; b.style.borderColor = '#FFB000';
+        renderPdf('wiring/' + d.id + '.pdf');
+      });
+      list.appendChild(b);
+    });
+    // OEM PDFs render only on click (keeps the interactive schematic snappy)
+    document.getElementById('wireView').innerHTML = '<div style="color:#5A5D64; font-family:\'JetBrains Mono\',monospace; font-size:12px; padding:40px; text-align:center;">Select a factory diagram at left to render it here.</div>';
+  })();
   const colors = [
     { name: 'Tornado Red', hex: '#C41E1E' },
     { name: 'Reflex Silver', hex: '#B8BCC0' },
