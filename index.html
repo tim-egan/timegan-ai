@@ -181,8 +181,9 @@
     <div class="eq"><span class="num">[13]</span><var>R</var> = (<var>ṁ</var> <var>c<sub>p</sub></var>)<sub>c</sub> / (<var>ṁ</var> <var>c<sub>p</sub></var>)<sub>h</sub></div>
     <div class="eq"><span class="num">[14]</span><var>S</var> = (<var>t<sub>o</sub></var> − <var>t<sub>i</sub></var>) / (<var>T<sub>i</sub></var> − <var>t<sub>i</sub></var>)</div>
     <div class="eq"><span class="num">[15]</span><var>ΔT<sub>lm</sub></var> = [(<var>T<sub>i</sub></var> − <var>t<sub>o</sub></var>) − (<var>T<sub>o</sub></var> − <var>t<sub>i</sub></var>)] / ln[(<var>T<sub>i</sub></var> − <var>t<sub>o</sub></var>) / (<var>T<sub>o</sub></var> − <var>t<sub>i</sub></var>)]</div>
-    <p>With <var>F</var> and <var>ΔT<sub>lm</sub></var> known, [12] rearranges to solve for the number that actually matters when picking hardware, the required <var>UA</var>. Comparing this to the <var>UA</var> a real core's measured area and material actually deliver is the final check: does the hardware sitting in the car meet what the heat transfer demands?</p>
+    <p>With <var>F</var> and <var>ΔT<sub>lm</sub></var> known, [12] rearranges to solve for the number that actually matters when picking hardware, the required <var>UA</var>:</p>
     <div class="eq"><span class="num">[16]</span><var>UA</var> = <var>q</var> / (<var>F</var> <var>ΔT<sub>lm</sub></var>)</div>
+    <p>This is the actual order the calculations below run in, since it resolves what would otherwise be circular: [11] defines NTU in terms of <var>UA</var>, but <var>UA</var> is unknown until LMTD produces it. So <var>R</var> and <var>S</var> are computed from the now-known temperatures, <var>F</var> is read off the chart, <var>ΔT<sub>lm</sub></var> is computed from [15], and [16] gives <var>UA</var>. Only then does [11] run, using that <var>UA</var> to report NTU as a normalized score of the exchanger's performance, not as a step toward finding <var>UA</var>. Last, dividing the required <var>UA</var> by the real core's measured area gives <var>U</var> = <var>UA</var>/<var>A</var>, the actual heat transfer coefficient that hardware would need to deliver, the final number to sanity-check: does it fall in a physically believable range for this kind of core?</p>
     <p>The same procedure applies to both the intercooler and the radiator. Only the temperatures and flow rates change.</p>
 
     <h2>4. Calculations</h2>
@@ -222,14 +223,22 @@
     <div class="eq"><var>q<sub>w</sub></var> = <var>ṁ<sub>w</sub></var> <var>c<sub>p,w</sub></var>(<var>T<sub>i</sub></var> − <var>T<sub>o</sub></var>) = 0.26 × 4.198×10³ × (110 − 48.89) = <strong>66.51 kW</strong></div>
     <p>Since <var>q<sub>a</sub></var> = <var>q<sub>w</sub></var>, that same heat sets the air outlet temperature by solving equation [5] the other direction: <var>t<sub>o</sub></var> = <strong>63.25 °C</strong>. Capacitances follow directly, and since air carries the larger one here, effectiveness comes from equation [9]:</p>
     <div class="eq"><var>C<sub>w</sub></var> = 1.13 × 10³ &nbsp;·&nbsp; <var>C<sub>a</sub></var> = 2.15 × 10³ &nbsp;·&nbsp; <var>ε</var> = (<var>T<sub>i</sub></var> − <var>T<sub>o</sub></var>)/(<var>T<sub>i</sub></var> − <var>t<sub>i</sub></var>) = <strong>0.786</strong></div>
-    <p>Equation [10] recovers the same heat transfer from <var>ε</var>, as a check on the arithmetic above, and the LMTD gives the temperature-weighted driving force behind it:</p>
-    <div class="eq"><var>q</var> = <var>ε</var>(<var>ṁ</var><var>c<sub>p</sub></var>)<sub>min</sub>(<var>T<sub>i</sub></var> − <var>t<sub>i</sub></var>) = 66.51 kW ✓ &nbsp;·&nbsp; <var>ΔT<sub>lm</sub></var> = 29.27</div>
-    <p>From there, NTU and the required <var>UA</var> follow, and comparing <var>UA</var> to the measured core area gives an overall heat transfer coefficient <var>U</var>:</p>
-    <div class="eq">NTU = 2.25 &nbsp;·&nbsp; <var>UA</var> = 2452 W/°C &nbsp;·&nbsp; <var>A</var> = 2.11 m² &nbsp;·&nbsp; <var>U</var> = 1162 W/m²·°C</div>
+    <p>Equation [10] recovers the same heat transfer from <var>ε</var>, as a check on the arithmetic above:</p>
+    <div class="eq"><var>q</var> = <var>ε</var>(<var>ṁ</var><var>c<sub>p</sub></var>)<sub>min</sub>(<var>T<sub>i</sub></var> − <var>t<sub>i</sub></var>) = <strong>66.51 kW ✓</strong></div>
+    <p>Now that all four temperatures are known, <var>R</var> and <var>S</var> follow (water is the hot fluid here, air the cold one):</p>
+    <div class="eq"><var>R</var> = <var>C<sub>a</sub></var>/<var>C<sub>w</sub></var> = 2.15×10³ / 1.13×10³ = <strong>1.90</strong> &nbsp;·&nbsp; <var>S</var> = (63.25 − 32.22)/(110 − 32.22) = <strong>0.40</strong></div>
+    <p>Reading <var>F</var> off the correction-factor chart at that <var>R</var> and <var>S</var> gives <var>F</var> ≈ 0.93. <var>ΔT<sub>lm</sub></var> from equation [15]:</p>
+    <div class="eq"><var>ΔT<sub>lm</sub></var> = [(110 − 63.25) − (48.89 − 32.22)] / ln[(110 − 63.25)/(48.89 − 32.22)] = <strong>29.27</strong></div>
+    <p>Equation [16] gives the required <var>UA</var>:</p>
+    <div class="eq"><var>UA</var> = <var>q</var> / (<var>F</var> <var>ΔT<sub>lm</sub></var>) = 66,510 / (0.93 × 29.27) = <strong>2452 W/°C</strong></div>
+    <p>NTU from equation [11], using that <var>UA</var>:</p>
+    <div class="eq">NTU = <var>UA</var> / (<var>ṁ</var><var>c<sub>p</sub></var>)<sub>min</sub> = 2452 / 1.13×10³ = <strong>2.25</strong></div>
+    <p>The radiator actually installed measures <var>A</var> = 2.11 m². Dividing the required <var>UA</var> by that real area gives the heat transfer coefficient that piece of hardware would need to deliver:</p>
+    <div class="eq"><var>U</var> = <var>UA</var> / <var>A</var> = 2452 / 2.11 = <strong>1162 W/m²·°C</strong></div>
     <p>That value of <var>U</var> is high enough to be suspicious, a sign that the 110 °C inlet assumption driving this whole section needs to be checked against the intercooler side of the same loop rather than taken as given.</p>
 
     <h3 class="sec">4.3 Intercooler, Initial Analysis</h3>
-    <p>A comparable turbocharged vehicle showed inlet air temperatures above 110 °C at the compressor outlet, and intake air temperature should not run above 82 °C, so those two figures set the intercooler's design inlet and target outlet:</p>
+    <p>A comparable turbocharged vehicle showed inlet air temperatures above 110 °C at the compressor outlet, and intake air temperature should not run above 82 °C. That ceiling, converted from a round 180 °F target, lands at 82.22 °C, 0.22 °C over on paper. That is unit rounding, not a design margin being ignored; the two figures set the intercooler's design inlet and target outlet:</p>
     <table>
       <tr><th></th><th>Water (°C)</th><th>Air (°C)</th></tr>
       <tr><td>Inlet</td><td>48.89</td><td>110</td></tr>
@@ -245,8 +254,18 @@
     <div class="eq"><var>q<sub>a</sub></var> = <var>ṁ<sub>a</sub></var> <var>c<sub>p,a</sub></var>(<var>T<sub>i</sub></var> − <var>T<sub>o</sub></var>) = <strong>5.12 kW</strong></div>
     <p>Setting the water side equal and solving gives the intercooler's water outlet temperature, <var>t<sub>2</sub></var> = 53.5 °C. Air carries the smaller capacitance on this side of the loop, so effectiveness comes from equation [8] instead of [9]:</p>
     <div class="eq"><var>C<sub>w</sub></var> = 1.13 × 10³ &nbsp;·&nbsp; <var>C<sub>a</sub></var> = 1.82 × 10² &nbsp;·&nbsp; <var>ε</var> = <strong>0.45</strong></div>
-    <div class="eq"><var>q</var> = <var>ε</var>(<var>ṁ</var><var>c<sub>p</sub></var>)<sub>min</sub>(<var>T<sub>i</sub></var> − <var>t<sub>i</sub></var>) = 5.12 kW ✓ &nbsp;·&nbsp; <var>ΔT<sub>lm</sub></var> = 43.89</div>
-    <div class="eq">NTU = 0.65 &nbsp;·&nbsp; <var>UA</var> = 120.27 W/°C &nbsp;·&nbsp; <var>A</var> = 1.58 m² &nbsp;·&nbsp; <var>U</var> = 76.12 W/m²·°C</div>
+    <p>Equation [10] checks the same heat transfer from <var>ε</var>:</p>
+    <div class="eq"><var>q</var> = <var>ε</var>(<var>ṁ</var><var>c<sub>p</sub></var>)<sub>min</sub>(<var>T<sub>i</sub></var> − <var>t<sub>i</sub></var>) = <strong>5.12 kW ✓</strong></div>
+    <p><var>R</var> and <var>S</var>, air is the hot fluid on this side, water the cold one:</p>
+    <div class="eq"><var>R</var> = <var>C<sub>w</sub></var>/<var>C<sub>a</sub></var> = 1.13×10³ / 1.82×10² = <strong>6.21</strong> &nbsp;·&nbsp; <var>S</var> = (53.5 − 48.89)/(110 − 48.89) = <strong>0.075</strong></div>
+    <p>Reading <var>F</var> off the chart at that <var>R</var> and <var>S</var> gives <var>F</var> ≈ 0.97. <var>ΔT<sub>lm</sub></var> from equation [15]:</p>
+    <div class="eq"><var>ΔT<sub>lm</sub></var> = [(110 − 53.5) − (82.22 − 48.89)] / ln[(110 − 53.5)/(82.22 − 48.89)] = <strong>43.89</strong></div>
+    <p>Equation [16] for the required <var>UA</var>:</p>
+    <div class="eq"><var>UA</var> = <var>q</var> / (<var>F</var> <var>ΔT<sub>lm</sub></var>) = 5,120 / (0.97 × 43.89) = <strong>120.27 W/°C</strong></div>
+    <p>NTU from equation [11], using that <var>UA</var>:</p>
+    <div class="eq">NTU = <var>UA</var> / (<var>ṁ</var><var>c<sub>p</sub></var>)<sub>min</sub> = 120.27 / 1.82×10² = <strong>0.65</strong></div>
+    <p>The intercooler core actually built measures <var>A</var> = 1.58 m². The heat transfer coefficient that hardware would need to deliver:</p>
+    <div class="eq"><var>U</var> = <var>UA</var> / <var>A</var> = 120.27 / 1.58 = <strong>76.12 W/m²·°C</strong></div>
 
     <h3 class="sec">Iteration 1, Coupling the Loops</h3>
     <p>The intercooler's water outlet just came out to about 53 °C. That number is not a free variable: it is also the radiator's water inlet, since the two loops share the same water. Section 4.2 assumed 110 °C for that inlet. The gap between 53 °C and 110 °C is too large to treat as rounding error, so the radiator was recalculated using the coupled temperature the intercooler side actually produces.</p>
