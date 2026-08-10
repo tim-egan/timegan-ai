@@ -80,8 +80,8 @@
         <span class="card-action">TRACK PROGRESS →</span>
       </div>
       <a href="jti-tuning-tool.html" class="card" style="cursor: pointer; display: block; text-decoration: none;">
-        <h3>JTI Tuning Cheat Sheet</h3>
-        <p>Interactive tuning reference — injector sizing, fuel math, and target calculations. Live tool, built for dialing in the standalone.</p>
+        <h3>Forced Induction Fuel Math</h3>
+        <p>Interactive tuning reference, injector sizing, fuel math, and target calculations. Works for any boosted engine, not just this one.</p>
         <span class="card-action">OPEN TOOL →</span>
       </a>
       <div class="card" style="cursor: pointer;" id="nav-wiring">
@@ -316,6 +316,13 @@
 
     <h2>9. Updated Conclusion</h2>
     <p>The later analysis sharpened the original conclusion rather than overturning it. The dyno figures in §6 describe the transient regime; at full soak the system holds about 80 °F over ambient, a real timing cost on pump gas that becomes a manageable density trade on E85. The <strong class="win">1.12–1.14× net density gain</strong> confirms temperature recovery still beats the pressure loss. The standalone speed-density conversion <strong class="win">resolved the metering failure</strong> the original airflow math in §3.1 had implicitly predicted, and replaced the flat VE assumption with a measured table. The air-water intercooler still holds charge air closer to ambient than a comparable air-to-air setup; the coupled model in §8.2 just describes that advantage more completely across conditions than a single dyno pull could. E85, ECU-controlled boost, and IAT/EGT instrumentation move the system from a fixed mechanical operating point to one that is measured, mapped, and managed across every condition modeled above.</p>
+
+    <p class="kicker">What's Next</p>
+    <p>The engineering here ends at a validated charge-cooling gain and a coupled model that holds up across conditions. What it does not do on its own is make more power. E85's knock resistance and extra charge cooling (§8.3) raise the ceiling on how hard this system can be pushed at the same 18 psi, and do it more safely: more margin against detonation, cooler EGT, more room under the same boost. None of that is free, it only works if the fuel system is sized for it first, injector duty cycle, pump headroom, target AFR, recalculated for E85's fuel-mass demand. That math is downstream of this report, not part of it.</p>
+    <a href="jti-tuning-tool.html" class="card" style="cursor: pointer; display: block; text-decoration: none; margin-top: 16px;">
+      <h3>Forced Induction Fuel Math →</h3>
+      <p style="margin-bottom: 0;">Injector sizing, fuel math, and target calculations for the E85 transition. Built for this standalone, works for any boosted engine.</p>
+    </a>
   </div>
 </div>
 
