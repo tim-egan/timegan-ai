@@ -105,10 +105,10 @@
   <h1>Tuning Cheat Sheet <span class="v">v2</span></h1>
   <span class="tag">MK4 GTI VR6 · PT6262 · AWIC · Speed-Density · E85</span>
   <div class="keyrow">
-    <span><i class="sw a"></i>fuck with this</span>
+    <span><i class="sw a"></i>mess with this</span>
     <span><i class="sw b"></i>set once</span>
     <span><i class="sw c"></i>demo only</span>
-    <span><i class="sw d"></i>don't fuck with this</span>
+    <span><i class="sw d"></i>don't mess with this</span>
   </div>
 </div></header>
 
@@ -321,7 +321,7 @@ function calc(){
   var pumpOK=effPump>lph&&effPump>pumpNeed;
   var convErr=(pumpNeed-lph)/pumpNeed,convOK=Math.abs(convErr)<0.1;
   var conv=convOK?"Close enough":(convErr<0?"Raise BSFC or Lambda or Lower VE":"Lower BSFC or Lambda or Raise VE");
-  var verdict=injOK&&pumpOK?"Fuck yea!":injOK&&!pumpOK?"Needs more fuel pump":!injOK&&pumpOK?"Needs bigger injectors":"Bruh… no";
+  var verdict=injOK&&pumpOK?"No mess here!":injOK&&!pumpOK?"Needs more fuel pump":!injOK&&pumpOK?"Needs bigger injectors":"Bruh… no";
   $("verdict").className="verdict "+(injOK&&pumpOK?"pass":"fail");
   txt("vtext",verdict);
   txt("vwhy","inj "+fmt(effInj,0)+" vs "+fmt(injReq,0)+" cc/min · peak IDC "+fmt(peakIDC)+"% vs "+cap+"% · pump "+fmt(effPump,0)+" vs "+fmt(pumpReq,0)+" LPH");
